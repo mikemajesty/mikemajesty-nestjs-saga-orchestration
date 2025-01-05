@@ -1,0 +1,95 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug: @Order.api",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "address": "127.0.0.1",
+      "restart": true,
+      "localRoot": "${workspaceFolder}/apps/order",
+      "remoteRoot": "/app/apps/order",
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceRoot}/bin/server/*/.js"
+      ],
+      "skipFiles": [
+        "${workspaceRoot}/node_modules/*/.js",
+        "<node_internals>/*/.js"
+      ]
+    },
+    {
+      "name": "Debug: @Orchestrator.api",
+      "type": "node",
+      "request": "attach",
+      "port": 9230,
+      "address": "127.0.0.1",
+      "restart": true,
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/app",
+      "outFiles": [
+        "${workspaceRoot}/bin/server/*/.js"
+      ],
+      "skipFiles": [
+        "${workspaceRoot}/node_modules/*/.js",
+        "<node_internals>/*/.js"
+      ]
+    },
+    {
+      "name": "Debug: @Payment.api",
+      "type": "node",
+      "request": "attach",
+      "port": 9232,
+      "address": "127.0.0.1",
+      "restart": true,
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/app",
+      "outFiles": [
+        "${workspaceRoot}/bin/server/*/.js"
+      ],
+      "skipFiles": [
+        "${workspaceRoot}/node_modules/*/.js",
+        "<node_internals>/*/.js"
+      ]
+    },
+    {
+      "name": "Debug: @Inventory.api",
+      "type": "node",
+      "request": "attach",
+      "port": 9231,
+      "address": "127.0.0.1",
+      "restart": true,
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/app",
+      "outFiles": [
+        "${workspaceRoot}/bin/server/*/.js"
+      ],
+      "skipFiles": [
+        "${workspaceRoot}/node_modules/*/.js",
+        "<node_internals>/*/.js"
+      ]
+    },
+    {
+      "name": "Debug: @Product-Validator.api",
+      "type": "node",
+      "request": "attach",
+      "port": 9233,
+      "address": "127.0.0.1",
+      "restart": true,
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/app",
+      "outFiles": [
+        "${workspaceRoot}/bin/server/*/.js"
+      ],
+      "skipFiles": [
+        "${workspaceRoot}/node_modules/*/.js",
+        "<node_internals>/*/.js"
+      ]
+    }
+  ]
+}

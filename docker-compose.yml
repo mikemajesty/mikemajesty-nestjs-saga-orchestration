@@ -1,0 +1,111 @@
+version: '3.1'
+
+services:
+  # nestjs-saga-orchestration-mongo:
+  #   container_name: nestjs-saga-orchestration-mongo
+  #   image: mongo
+  #   restart: always
+  #   volumes: 
+  #     - nestjs-saga-orchestration:/data/db
+  #     - .docker/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  #   networks:
+  #     - mongo-network
+  #   ports:
+  #     - '27017:27017'
+  #   env_file:
+  #     - .env
+  # postgres:
+  #   container_name: nestjs-saga-orchestration-postgres
+  #   image: postgres
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - '5432:5432'
+  #   volumes:
+  #     - nestjs-saga-orchestration-postgres:/data/postgres
+  #     - .docker/postgres/create-database.sql:/docker-entrypoint-initdb.d/create-database.sql
+  #   restart: always
+  #   networks:
+  #     - postgres-network
+  # redis:
+  #   container_name: nestjs-saga-orchestration-redis
+  #   image: 'redis:alpine'
+  #   volumes:
+  #     - nestjs-saga-orchestration-redis:/data
+  #   ports:
+  #     - 6379:6379
+  order-service:
+    container_name: order-service
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./apps/order/Dockerfile
+    volumes:
+      - ".:/app"
+    ports:
+      - 3000:3000
+      - 9229:9229
+    command: npm run start:order --inspect-brk=0.0.0.0:9229
+  orchestrator-service:
+     container_name: orchestrator-service
+     env_file:
+       - .env
+     build:
+       context: .
+       dockerfile: ./apps/orchestrator/Dockerfile
+     volumes:
+       - ".:/app"
+     ports:
+       - 8080:8080
+       - 9230:9230
+     command: npm run start:orchestrator  --inspect-brk=0.0.0.0:9230
+  inventory-service:
+     container_name: inventory-service
+     env_file:
+       - .env
+     build:
+       context: .
+       dockerfile: ./apps/inventory/Dockerfile
+     volumes:
+       - ".:/app"
+     ports:
+       - 8092:8092
+       - 9231:9231
+     command: npm run start:inventory  --inspect-brk=0.0.0.0:9231
+  payment-service:
+     container_name: payment-service
+     env_file:
+       - .env
+     build:
+       context: .
+       dockerfile: ./apps/payment/Dockerfile
+     volumes:
+       - ".:/app"
+     ports:
+       - 8091:8091
+       - 9232:9232
+     command: npm run start:payment  --inspect-brk=0.0.0.0:9232
+  product-validator-service:
+     container_name: product-validator-service
+     env_file:
+       - .env
+     build:
+       context: .
+       dockerfile: ./apps/product-validator/Dockerfile
+     volumes:
+       - ".:/app"
+     ports:
+       - 8090:8090
+       - 9233:9233
+     command: npm run start:product-validator  --inspect-brk=0.0.0.0:9233
+  
+volumes:
+  nestjs-saga-orchestration-postgres:
+  nestjs-saga-orchestration-redis:
+  nestjs-saga-orchestration:
+networks:
+  mongo-network:
+    driver: bridge
+  postgres-network:
+    driver: bridge
