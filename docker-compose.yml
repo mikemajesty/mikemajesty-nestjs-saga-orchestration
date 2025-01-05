@@ -2,39 +2,76 @@ version: '3.1'
 
 services:
   mongo:
-    container_name: nestjs-saga-orchestration-mongo
+    container_name: mongo
     image: mongo
     restart: always
     volumes: 
-      - nestjs-saga-orchestration:/data/db
+      - nestjs-saga-orchestration-mongo:/data/db
       - .docker/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
       - mongo-network
     ports:
       - '27017:27017'
-    env_file:
-      - .env
-  postgres:
-    container_name: nestjs-saga-orchestration-postgres
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_DATABASE=order-db
+  product-db:
+    container_name: product-db
     image: postgres
-    env_file:
-      - .env
+    environment:
+      - POSTGRES_HOST=localhost
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DATABASE=product-db
     ports:
       - '5432:5432'
     volumes:
       - nestjs-saga-orchestration-postgres:/data/postgres
-      - .docker/postgres/create-database.sql:/docker-entrypoint-initdb.d/create-database.sql
+      - .docker/postgres/create-database-product-db.sql:/docker-entrypoint-initdb.d/create-database-product-db.sql
+    restart: always
+    networks:
+      - postgres-network
+  inventory-db:
+    container_name: inventory-db
+    image: postgres
+    environment:
+      - POSTGRES_HOST=localhost
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DATABASE=inventory-db
+    ports:
+      - '5434:5432'
+    volumes:
+      - nestjs-saga-orchestration-postgres:/data/postgres
+      - .docker/postgres/create-database-inventory-db.sql:/docker-entrypoint-initdb.d/create-database-inventory-db.sql
+    restart: always
+    networks:
+      - postgres-network
+  payment-db:
+    container_name: payment-db
+    image: postgres
+    environment:
+      - POSTGRES_HOST=localhost
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DATABASE=payment-db
+    ports:
+      - '5433:5432'
+    volumes:
+      - nestjs-saga-orchestration-postgres:/data/postgres
+      - .docker/postgres/create-database-payment-db.sql:/docker-entrypoint-initdb.d/create-database-payment-db.sql
     restart: always
     networks:
       - postgres-network
   order-service:
     container_name: order-service
     depends_on:
-      - postgres
       - mongo
+      - kafka
     networks:
-      - postgres-network
       - mongo-network
+      - orchestrator-saga
     env_file:
       - .env
     build:
@@ -49,11 +86,9 @@ services:
   orchestrator-service:
      container_name: orchestrator-service
      depends_on:
-      - postgres
-      - mongo
+      - kafka
      networks:
-      - postgres-network
-      - mongo-network
+      - orchestrator-saga
      env_file:
        - .env
      build:
@@ -70,11 +105,11 @@ services:
      env_file:
        - .env
      depends_on:
-      - postgres
-      - mongo
+      - inventory-db
+      - kafka
      networks:
       - postgres-network
-      - mongo-network
+      - orchestrator-saga
      build:
        context: .
        dockerfile: ./apps/inventory/Dockerfile
@@ -87,11 +122,11 @@ services:
   payment-service:
      container_name: payment-service
      depends_on:
-      - postgres
-      - mongo
+      - payment-db
+      - kafka
      networks:
       - postgres-network
-      - mongo-network
+      - orchestrator-saga
      env_file:
        - .env
      build:
@@ -106,11 +141,11 @@ services:
   product-validator-service:
      container_name: product-validator-service
      depends_on:
-      - postgres
-      - mongo
+      - product-db
+      - kafka
      networks:
       - postgres-network
-      - mongo-network
+      - orchestrator-saga
      env_file:
        - .env
      build:
@@ -164,7 +199,7 @@ services:
 volumes:
   nestjs-saga-orchestration-postgres:
   nestjs-saga-orchestration-redis:
-  nestjs-saga-orchestration:
+  nestjs-saga-orchestration-mongo:
 networks:
   mongo-network:
     driver: bridge

@@ -12,4 +12,12 @@ $ npm install
 $ docker-compose up --build
 ```
 
+### Informações
+
+```
+Configuração feita até a aula: 
+15. Criando o MongoDB e o PostgreSQL no Docker-compose
+da Seção: Seção 3: Preparando o ambiente de desenvolvimento
+```
+
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

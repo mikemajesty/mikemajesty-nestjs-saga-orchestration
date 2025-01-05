@@ -4,7 +4,7 @@ db.createUser(
     pwd: "admin",
     roles: [
       {
-        role: "admin",
+        role: "readWrite",
         db: "order-db"
       }
     ]
