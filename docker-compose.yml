@@ -1,41 +1,40 @@
 version: '3.1'
 
 services:
-  # nestjs-saga-orchestration-mongo:
-  #   container_name: nestjs-saga-orchestration-mongo
-  #   image: mongo
-  #   restart: always
-  #   volumes: 
-  #     - nestjs-saga-orchestration:/data/db
-  #     - .docker/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-  #   networks:
-  #     - mongo-network
-  #   ports:
-  #     - '27017:27017'
-  #   env_file:
-  #     - .env
-  # postgres:
-  #   container_name: nestjs-saga-orchestration-postgres
-  #   image: postgres
-  #   env_file:
-  #     - .env
-  #   ports:
-  #     - '5432:5432'
-  #   volumes:
-  #     - nestjs-saga-orchestration-postgres:/data/postgres
-  #     - .docker/postgres/create-database.sql:/docker-entrypoint-initdb.d/create-database.sql
-  #   restart: always
-  #   networks:
-  #     - postgres-network
-  # redis:
-  #   container_name: nestjs-saga-orchestration-redis
-  #   image: 'redis:alpine'
-  #   volumes:
-  #     - nestjs-saga-orchestration-redis:/data
-  #   ports:
-  #     - 6379:6379
+  mongo:
+    container_name: nestjs-saga-orchestration-mongo
+    image: mongo
+    restart: always
+    volumes: 
+      - nestjs-saga-orchestration:/data/db
+      - .docker/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - mongo-network
+    ports:
+      - '27017:27017'
+    env_file:
+      - .env
+  postgres:
+    container_name: nestjs-saga-orchestration-postgres
+    image: postgres
+    env_file:
+      - .env
+    ports:
+      - '5432:5432'
+    volumes:
+      - nestjs-saga-orchestration-postgres:/data/postgres
+      - .docker/postgres/create-database.sql:/docker-entrypoint-initdb.d/create-database.sql
+    restart: always
+    networks:
+      - postgres-network
   order-service:
     container_name: order-service
+    depends_on:
+      - postgres
+      - mongo
+    networks:
+      - postgres-network
+      - mongo-network
     env_file:
       - .env
     build:
@@ -49,6 +48,12 @@ services:
     command: npm run start:order --inspect-brk=0.0.0.0:9229
   orchestrator-service:
      container_name: orchestrator-service
+     depends_on:
+      - postgres
+      - mongo
+     networks:
+      - postgres-network
+      - mongo-network
      env_file:
        - .env
      build:
@@ -64,6 +69,12 @@ services:
      container_name: inventory-service
      env_file:
        - .env
+     depends_on:
+      - postgres
+      - mongo
+     networks:
+      - postgres-network
+      - mongo-network
      build:
        context: .
        dockerfile: ./apps/inventory/Dockerfile
@@ -75,6 +86,12 @@ services:
      command: npm run start:inventory  --inspect-brk=0.0.0.0:9231
   payment-service:
      container_name: payment-service
+     depends_on:
+      - postgres
+      - mongo
+     networks:
+      - postgres-network
+      - mongo-network
      env_file:
        - .env
      build:
@@ -88,6 +105,12 @@ services:
      command: npm run start:payment  --inspect-brk=0.0.0.0:9232
   product-validator-service:
      container_name: product-validator-service
+     depends_on:
+      - postgres
+      - mongo
+     networks:
+      - postgres-network
+      - mongo-network
      env_file:
        - .env
      build:
@@ -99,6 +122,44 @@ services:
        - 8090:8090
        - 9233:9233
      command: npm run start:product-validator  --inspect-brk=0.0.0.0:9233
+  kafka:
+    container_name: kafka
+    image: obsidiandynamics/kafka
+    restart: "no"
+    ports:
+      - "2181:2181"
+      - "9092:9092"
+    networks:
+      - orchestrator-saga
+    environment:
+      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT: "6000"
+      KAFKA_RESTART_ATTEMPTS: "10"
+      KAFKA_RESTART_DELAY: "5"
+      ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
+    volumes:
+      - ./data/kafka/data:/var/lib/kafka/data
+
+  redpanda-console:
+    container_name: redpanda
+    image: docker.redpanda.com/vectorized/console:latest
+    restart: on-failure
+    entrypoint: /bin/sh
+    command: -c "echo \"$$CONSOLE_CONFIG_FILE\" > /tmp/config.yml; /app/console"
+    ports:
+      - "8081:8080"
+    networks:
+      - orchestrator-saga
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["kafka:29092"]
+    depends_on:
+      - "kafka"
   
 volumes:
   nestjs-saga-orchestration-postgres:
@@ -108,4 +169,6 @@ networks:
   mongo-network:
     driver: bridge
   postgres-network:
+    driver: bridge
+  orchestrator-saga:
     driver: bridge
