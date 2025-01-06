@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { HealthModule } from './modules/health/module';
 import { SecretsModule } from '@/infra/secrets';
 import { LoggerModule } from '@/infra/logger';
+import { DatabaseModule } from './infra/databse';
 
 @Module({
-  imports: [HealthModule, SecretsModule, LoggerModule],
+  imports: [HealthModule, SecretsModule, LoggerModule, DatabaseModule],
   controllers: [],
   providers: [],
 })

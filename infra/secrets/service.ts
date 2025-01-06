@@ -35,7 +35,8 @@ export class SecretsService implements ISecretsAdapter {
         PORT: this.config.get<number>('ORDER_MONGO_PORT') as number,
         USER: this.config.get<string>('ORDER_MONGO_USER') as string,
         PASSWORD: this.config.get<string>('ORDER_MONGO_PASSWORD') as string,
-        DATABASE: this.config.get<string>('ORDER_MONGO_DATABASE') as string
+        DATABASE: this.config.get<string>('ORDER_MONGO_DATABASE') as string,
+        URI: this.config.get('MONGO_URL')
       }
     },
     ORCHESTRATOR: {
@@ -84,9 +85,5 @@ export class SecretsService implements ISecretsAdapter {
         )}@${this.config.get('INVENTORY_POSTGRES_HOST')}:${this.config.get('INVENTORY_POSTGRES_PORT')}/${this.config.get('INVENTORY_POSTGRES_DATABASE')}`,
       }
     }
-  };
-
-  MONGO = {
-    MONGO_URL: this.config.get('MONGO_URL'),
   };
 }

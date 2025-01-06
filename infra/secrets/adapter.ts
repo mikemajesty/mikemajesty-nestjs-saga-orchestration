@@ -11,6 +11,7 @@ export abstract class ISecretsAdapter {
         USER: string
         PASSWORD: string
         DATABASE: string
+        URI: string
       }
     };
     ORCHESTRATOR: {
@@ -53,10 +54,6 @@ export abstract class ISecretsAdapter {
         URI: string
       }
     }
-  };
-
-  MONGO: {
-    MONGO_URL: string;
   };
 
   IS_LOCAL: boolean;

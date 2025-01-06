@@ -1,15 +1,15 @@
 version: '3.1'
 
 services:
-  mongo:
-    container_name: mongo
+  order-db:
+    container_name: order-db
     image: mongo
     restart: always
     volumes: 
       - nestjs-saga-orchestration-mongo:/data/db
       - .docker/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
-      - mongo-network
+      - mongo-network-order-db
     ports:
       - '27017:27017'
     environment:
@@ -67,10 +67,10 @@ services:
   order-service:
     container_name: order-service
     depends_on:
-      - mongo
+      - order-db
       - kafka
     networks:
-      - mongo-network
+      - mongo-network-order-db
       - orchestrator-saga
     env_file:
       - .env
@@ -201,7 +201,7 @@ volumes:
   nestjs-saga-orchestration-redis:
   nestjs-saga-orchestration-mongo:
 networks:
-  mongo-network:
+  mongo-network-order-db:
     driver: bridge
   postgres-network-inventory-db:
     driver: bridge
