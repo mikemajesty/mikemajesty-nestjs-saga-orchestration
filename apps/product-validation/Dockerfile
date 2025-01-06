@@ -8,4 +8,4 @@ RUN npm install
 
 COPY . .
 
-CMD [ "npm", "run", "start:product-validator" ]
+CMD [ "npm", "run", "start:product-validation" ]

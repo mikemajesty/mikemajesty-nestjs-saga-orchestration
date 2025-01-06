@@ -1,5 +1,5 @@
 
-enum TopicsEnum {
+export enum TopicsEnum {
   START_SAGA="start-saga",
   BASE_ORCHESTRATOR="orchestrator",
   FINISH_SUCCESS="finish-success",

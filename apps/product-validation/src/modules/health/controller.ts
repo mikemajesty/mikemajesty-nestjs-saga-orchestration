@@ -4,6 +4,6 @@ import { Controller, Get } from '@nestjs/common';
 export class HealthController {
   @Get()
   getHello(): string {
-    return 'product-validator UP!';
+    return 'product-validation UP!';
   }
 }

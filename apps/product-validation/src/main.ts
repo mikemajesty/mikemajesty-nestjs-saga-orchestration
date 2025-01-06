@@ -17,10 +17,10 @@ async function bootstrap() {
   } = app.get(ISecretsAdapter);
   const logger = app.get(ILoggerAdapter);
 
-  logger.setApplication("product-validator");
+  logger.setApplication("product-validation");
   app.useLogger(logger);
 
-  app.setGlobalPrefix('api/product-validator', {
+  app.setGlobalPrefix('api/product-validation', {
     exclude: [
       { path: 'health', method: RequestMethod.GET },
       { path: '/', method: RequestMethod.GET }
@@ -45,7 +45,7 @@ async function bootstrap() {
   });
 
   await app.listen(PORT, () => {
-    logger.log(`🟢 ${"product-validator"} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`);
+    logger.log(`🟢 ${"product-validation"} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`);
     if (!IS_PRODUCTION) logger.log(`🟢 Swagger listening at ${bold(`${HOST}/docs`)} 🟢`);
   });
 

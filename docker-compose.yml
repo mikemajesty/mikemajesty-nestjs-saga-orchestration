@@ -138,8 +138,8 @@ services:
        - 8091:8091
        - 9232:9232
      command: npm run start:payment  --inspect-brk=0.0.0.0:9232
-  product-validator-service:
-     container_name: product-validator-service
+  product-validation-service:
+     container_name: product-validation-service
      depends_on:
       - product-db
       - kafka
@@ -150,13 +150,13 @@ services:
        - .env
      build:
        context: .
-       dockerfile: ./apps/product-validator/Dockerfile
+       dockerfile: ./apps/product-validation/Dockerfile
      volumes:
        - ".:/app"
      ports:
        - 8090:8090
        - 9233:9233
-     command: npm run start:product-validator  --inspect-brk=0.0.0.0:9233
+     command: npm run start:product-validation  --inspect-brk=0.0.0.0:9233
   kafka:
     container_name: kafka
     image: obsidiandynamics/kafka
