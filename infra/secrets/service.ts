@@ -29,35 +29,64 @@ export class SecretsService implements ISecretsAdapter {
   APPS = {
     ORDER: {
       PORT: this.config.get<number>('ORDER_APP_PORT') as number,
-      HOST: this.config.get<string>('ORDER_APP_HOST') as string
+      HOST: this.config.get<string>('ORDER_APP_HOST') as string,
+      DATABASE: {
+        HOST: this.config.get<string>('ORDER_MONGO_HOST') as string,
+        PORT: this.config.get<number>('ORDER_MONGO_PORT') as number,
+        USER: this.config.get<string>('ORDER_MONGO_USER') as string,
+        PASSWORD: this.config.get<string>('ORDER_MONGO_PASSWORD') as string,
+        DATABASE: this.config.get<string>('ORDER_MONGO_DATABASE') as string
+      }
     },
     ORCHESTRATOR: {
       PORT: this.config.get<number>('ORCHESTRATOR_APP_PORT') as number,
-      HOST: this.config.get<string>('ORCHESTRATOR_APP_HOST') as string
+      HOST: this.config.get<string>('ORCHESTRATOR_APP_HOST') as string,
     },
     PAYMENT: {
       PORT: this.config.get<number>('PAYMENT_APP_PORT') as number,
-      HOST: this.config.get<string>('PAYMENT_APP_HOST') as string
+      HOST: this.config.get<string>('PAYMENT_APP_HOST') as string,
+      DATABASE: {
+        HOST: this.config.get<string>('PAYMENT_POSTGRES_HOST') as string,
+        PORT: this.config.get<number>('PAYMENT_POSTGRES_PORT') as number,
+        USER: this.config.get<string>('PAYMENT_POSTGRES_USER') as string,
+        PASSWORD: this.config.get<string>('PAYMENT_POSTGRES_PASSWORD') as string,
+        DATABASE: this.config.get<string>('PAYMENT_POSTGRES_DATABASE') as string,
+        URI: `postgresql://${this.config.get('PAYMENT_POSTGRES_USER')}:${this.config.get(
+          'PAYMENT_POSTGRES_PASSWORD'
+        )}@${this.config.get('PAYMENT_POSTGRES_HOST')}:${this.config.get('PAYMENT_POSTGRES_PORT')}/${this.config.get('PAYMENT_POSTGRES_DATABASE')}`,
+      }
     },
     PRODUCT_VALIDATOR: {
       PORT: this.config.get<number>('PRODUCT_VALIDATOR_APP_PORT') as number,
-      HOST: this.config.get<string>('PRODUCT_VALIDATOR_APP_HOST') as string
+      HOST: this.config.get<string>('PRODUCT_VALIDATOR_APP_HOST') as string,
+      DATABASE: {
+        HOST: this.config.get<string>('PRODUCT_POSTGRES_HOST') as string,
+        PORT: this.config.get<number>('PRODUCT_POSTGRES_PORT') as number,
+        USER: this.config.get<string>('PRODUCT_POSTGRES_USER') as string,
+        PASSWORD: this.config.get<string>('PRODUCT_POSTGRES_PASSWORD') as string,
+        DATABASE: this.config.get<string>('PRODUCT_POSTGRES_DATABASE') as string,
+        URI: `postgresql://${this.config.get('PAYMENT_POSTGRES_USER')}:${this.config.get(
+          'PRODUCT_POSTGRES_PASSWORD'
+        )}@${this.config.get('PRODUCT_POSTGRES_HOST')}:${this.config.get('PRODUCT_POSTGRES_PORT')}/${this.config.get('PRODUCT_POSTGRES_DATABASE')}`,
+      }
     },
     INVENTORY: {
       PORT: this.config.get<number>('INVENTORY_APP_PORT') as number,
-      HOST: this.config.get<string>('INVENTORY_APP_HOST') as string
+      HOST: this.config.get<string>('INVENTORY_APP_HOST') as string,
+      DATABASE: {
+        HOST: this.config.get<string>('INVENTORY_POSTGRES_HOST') as string,
+        PORT: this.config.get<number>('INVENTORY_POSTGRES_PORT') as number,
+        USER: this.config.get<string>('INVENTORY_POSTGRES_USER') as string,
+        PASSWORD: this.config.get<string>('INVENTORY_POSTGRES_PASSWORD') as string,
+        DATABASE: this.config.get<string>('INVENTORY_POSTGRES_DATABASE') as string,
+        URI: `postgresql://${this.config.get('PAYMENT_POSTGRES_USER')}:${this.config.get(
+          'INVENTORY_POSTGRES_PASSWORD'
+        )}@${this.config.get('INVENTORY_POSTGRES_HOST')}:${this.config.get('INVENTORY_POSTGRES_PORT')}/${this.config.get('INVENTORY_POSTGRES_DATABASE')}`,
+      }
     }
   };
 
   MONGO = {
     MONGO_URL: this.config.get('MONGO_URL'),
   };
-
-  POSTGRES = {
-    POSTGRES_URL: `postgresql://${this.config.get('POSTGRES_USER')}:${this.config.get(
-      'POSTGRES_PASSWORD'
-    )}@${this.config.get('POSTGRES_HOST')}:${this.config.get('POSTGRES_PORT')}/${this.config.get('POSTGRES_DATABASE')}`,
-    POSTGRES_PGADMIN_URL: this.config.get('PGADMIN_URL')
-  };
-
 }

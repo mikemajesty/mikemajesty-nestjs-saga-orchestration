@@ -7,7 +7,6 @@ import { ErrorType, ILoggerAdapter } from '@/infra/logger';
 import { ISecretsAdapter } from '@/infra/secrets';
 import { AppModule } from './module';
 
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 

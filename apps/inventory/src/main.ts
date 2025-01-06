@@ -10,7 +10,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const {
     APPS: {
-      INVENTORY: { HOST, PORT }
+      INVENTORY: { HOST, PORT, DATABASE: { URI } }
     },
     ENV,
     IS_PRODUCTION,
@@ -48,5 +48,7 @@ async function bootstrap() {
     logger.log(`🟢 ${"inventory"} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`);
     if (!IS_PRODUCTION) logger.log(`🟢 Swagger listening at ${bold(`${HOST}/docs`)} 🟢`);
   });
+
+  logger.log(`🔵 Postgres listening at ${bold(URI)}`);
 }
 bootstrap();

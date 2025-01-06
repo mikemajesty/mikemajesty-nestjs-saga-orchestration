@@ -20,7 +20,7 @@ services:
     container_name: product-db
     image: postgres
     environment:
-      - POSTGRES_HOST=localhost
+      - POSTGRES_HOST=host.docker.internal
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DATABASE=product-db
@@ -31,12 +31,12 @@ services:
       - .docker/postgres/create-database-product-db.sql:/docker-entrypoint-initdb.d/create-database-product-db.sql
     restart: always
     networks:
-      - postgres-network
+      - postgres-network-product-db
   inventory-db:
     container_name: inventory-db
     image: postgres
     environment:
-      - POSTGRES_HOST=localhost
+      - POSTGRES_HOST=host.docker.internal
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DATABASE=inventory-db
@@ -47,12 +47,12 @@ services:
       - .docker/postgres/create-database-inventory-db.sql:/docker-entrypoint-initdb.d/create-database-inventory-db.sql
     restart: always
     networks:
-      - postgres-network
+      - postgres-network-inventory-db
   payment-db:
     container_name: payment-db
     image: postgres
     environment:
-      - POSTGRES_HOST=localhost
+      - POSTGRES_HOST=host.docker.internal
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DATABASE=payment-db
@@ -63,7 +63,7 @@ services:
       - .docker/postgres/create-database-payment-db.sql:/docker-entrypoint-initdb.d/create-database-payment-db.sql
     restart: always
     networks:
-      - postgres-network
+      - postgres-network-payment-db
   order-service:
     container_name: order-service
     depends_on:
@@ -108,7 +108,7 @@ services:
       - inventory-db
       - kafka
      networks:
-      - postgres-network
+      - postgres-network-inventory-db
       - orchestrator-saga
      build:
        context: .
@@ -125,7 +125,7 @@ services:
       - payment-db
       - kafka
      networks:
-      - postgres-network
+      - postgres-network-payment-db
       - orchestrator-saga
      env_file:
        - .env
@@ -144,7 +144,7 @@ services:
       - product-db
       - kafka
      networks:
-      - postgres-network
+      - postgres-network-product-db
       - orchestrator-saga
      env_file:
        - .env
@@ -203,7 +203,11 @@ volumes:
 networks:
   mongo-network:
     driver: bridge
-  postgres-network:
+  postgres-network-inventory-db:
+    driver: bridge
+  postgres-network-product-db:
+    driver: bridge
+  postgres-network-payment-db:
     driver: bridge
   orchestrator-saga:
     driver: bridge
