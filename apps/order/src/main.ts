@@ -6,6 +6,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ErrorType, ILoggerAdapter } from '@/infra/logger';
 import { ISecretsAdapter } from '@/infra/secrets';
 import { AppModule } from './module';
+import { KafkaService } from './infra/kafka/service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -45,6 +46,8 @@ async function bootstrap() {
   process.on('unhandledRejection', (error) => {
     logger.error(error as ErrorType);
   });
+
+  // const kafka = app.get(KafkaService);
 
   await app.listen(PORT, () => {
     logger.log(`🟢 ${"order"} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`);

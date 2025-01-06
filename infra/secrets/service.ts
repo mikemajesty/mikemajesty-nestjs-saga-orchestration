@@ -39,7 +39,6 @@ export class SecretsService implements ISecretsAdapter {
         URI: this.config.get('MONGO_URL')
       },
       KAFKA: {
-        NAME: this.config.get<string>('ORDER_SERVICE_NAME') as string,
         GROUP: this.config.get<string>('ORDER_SERVICE_GROUP_ID') as string,
         CLIENT_ID: this.config.get<string>('ORDER_SERVICE_CLIENT_ID') as string
       }
@@ -48,7 +47,6 @@ export class SecretsService implements ISecretsAdapter {
       PORT: this.config.get<number>('ORCHESTRATOR_APP_PORT') as number,
       HOST: this.config.get<string>('ORCHESTRATOR_APP_HOST') as string,
       KAFKA: {
-        NAME: this.config.get<string>('ORCHESTRATOR_SERVICE_NAME') as string,
         GROUP: this.config.get<string>('ORCHESTRATOR_SERVICE_GROUP_ID') as string,
         CLIENT_ID: this.config.get<string>('ORCHESTRATOR_SERVICE_CLIENT_ID') as string
       }
@@ -67,7 +65,6 @@ export class SecretsService implements ISecretsAdapter {
         )}@${this.config.get('PAYMENT_POSTGRES_HOST')}:${this.config.get('PAYMENT_POSTGRES_PORT')}/${this.config.get('PAYMENT_POSTGRES_DATABASE')}`,
       },
       KAFKA: {
-        NAME: this.config.get<string>('PAYMENT_SERVICE_NAME') as string,
         GROUP: this.config.get<string>('PAYMENT_SERVICE_GROUP_ID') as string,
         CLIENT_ID: this.config.get<string>('PAYMENT_SERVICE_CLIENT_ID') as string
       }
@@ -86,7 +83,6 @@ export class SecretsService implements ISecretsAdapter {
         )}@${this.config.get('PRODUCT_POSTGRES_HOST')}:${this.config.get('PRODUCT_POSTGRES_PORT')}/${this.config.get('PRODUCT_POSTGRES_DATABASE')}`,
       },
       KAFKA: {
-        NAME: this.config.get<string>('PRODUCT_VALIDATOR_SERVICE_NAME') as string,
         GROUP: this.config.get<string>('PRODUCT_VALIDATOR_SERVICE_GROUP_ID') as string,
         CLIENT_ID: this.config.get<string>('PAYMENT_SERVICE_CLIENT_ID') as string
       }
@@ -105,7 +101,6 @@ export class SecretsService implements ISecretsAdapter {
         )}@${this.config.get('INVENTORY_POSTGRES_HOST')}:${this.config.get('INVENTORY_POSTGRES_PORT')}/${this.config.get('INVENTORY_POSTGRES_DATABASE')}`,
       },
       KAFKA: {
-        NAME: this.config.get<string>('INVENTORY_SERVICE_NAME') as string,
         GROUP: this.config.get<string>('INVENTORY_SERVICE_GROUP_ID') as string,
         CLIENT_ID: this.config.get<string>('INVENTORY_SERVICE_CLIENT_ID') as string
       }

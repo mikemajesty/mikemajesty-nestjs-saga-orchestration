@@ -1,4 +1,4 @@
-import { GROUPS } from './../../node_modules/ip-address/src/v4/constants';
+
 export abstract class ISecretsAdapter {
   ENV: string;
 
@@ -15,7 +15,6 @@ export abstract class ISecretsAdapter {
         URI: string
       }
       KAFKA: {
-        NAME: string
         GROUP: string
         CLIENT_ID: string
       }
@@ -24,7 +23,6 @@ export abstract class ISecretsAdapter {
       PORT: number | string;
       HOST: string;
       KAFKA: {
-        NAME: string
         GROUP: string
         CLIENT_ID: string
       }
@@ -41,7 +39,6 @@ export abstract class ISecretsAdapter {
         URI: string
       }
       KAFKA: {
-        NAME: string
         GROUP: string
         CLIENT_ID: string
       }
@@ -58,7 +55,6 @@ export abstract class ISecretsAdapter {
         URI: string
       }
       KAFKA: {
-        NAME: string
         GROUP: string
         CLIENT_ID: string
       }
@@ -75,7 +71,6 @@ export abstract class ISecretsAdapter {
         URI: string
       }
       KAFKA: {
-        NAME: string
         GROUP: string
         CLIENT_ID: string
       }
