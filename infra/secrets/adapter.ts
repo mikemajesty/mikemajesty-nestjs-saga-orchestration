@@ -1,3 +1,4 @@
+import { GROUPS } from './../../node_modules/ip-address/src/v4/constants';
 export abstract class ISecretsAdapter {
   ENV: string;
 
@@ -13,10 +14,20 @@ export abstract class ISecretsAdapter {
         DATABASE: string
         URI: string
       }
+      KAFKA: {
+        NAME: string
+        GROUP: string
+        CLIENT_ID: string
+      }
     };
     ORCHESTRATOR: {
       PORT: number | string;
       HOST: string;
+      KAFKA: {
+        NAME: string
+        GROUP: string
+        CLIENT_ID: string
+      }
     };
     PAYMENT: {
       PORT: number | string;
@@ -28,6 +39,11 @@ export abstract class ISecretsAdapter {
         PASSWORD: string
         DATABASE: string
         URI: string
+      }
+      KAFKA: {
+        NAME: string
+        GROUP: string
+        CLIENT_ID: string
       }
     };
     PRODUCT_VALIDATOR: {
@@ -41,6 +57,11 @@ export abstract class ISecretsAdapter {
         DATABASE: string
         URI: string
       }
+      KAFKA: {
+        NAME: string
+        GROUP: string
+        CLIENT_ID: string
+      }
     },
     INVENTORY: {
       PORT: number | string;
@@ -52,6 +73,11 @@ export abstract class ISecretsAdapter {
         PASSWORD: string
         DATABASE: string
         URI: string
+      }
+      KAFKA: {
+        NAME: string
+        GROUP: string
+        CLIENT_ID: string
       }
     }
   };
