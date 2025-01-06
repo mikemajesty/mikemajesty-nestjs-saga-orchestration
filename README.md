@@ -16,7 +16,7 @@ $ docker-compose up --build
 
 ```
 Configuração feita até a aula: 
-15. Criando o MongoDB e o PostgreSQL no Docker-compose
+16. Conectando as aplicações ao PostgreSQL e MongoDB
 da Seção: Seção 3: Preparando o ambiente de desenvolvimento
 ```
 

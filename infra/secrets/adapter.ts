@@ -5,6 +5,14 @@ export abstract class ISecretsAdapter {
     ORDER: {
       PORT: number | string;
       HOST: string;
+      DATABASE: {
+        HOST: string
+        PORT: number
+        USER: string
+        PASSWORD: string
+        DATABASE: string
+        URI: string
+      }
     };
     ORCHESTRATOR: {
       PORT: number | string;
@@ -13,23 +21,39 @@ export abstract class ISecretsAdapter {
     PAYMENT: {
       PORT: number | string;
       HOST: string;
+      DATABASE: {
+        HOST: string
+        PORT: number
+        USER: string
+        PASSWORD: string
+        DATABASE: string
+        URI: string
+      }
     };
     PRODUCT_VALIDATOR: {
       PORT: number | string;
       HOST: string;
+      DATABASE: {
+        HOST: string
+        PORT: number
+        USER: string
+        PASSWORD: string
+        DATABASE: string
+        URI: string
+      }
     },
     INVENTORY: {
       PORT: number | string;
       HOST: string;
+      DATABASE: {
+        HOST: string
+        PORT: number
+        USER: string
+        PASSWORD: string
+        DATABASE: string
+        URI: string
+      }
     }
-  };
-
-  MONGO: {
-    MONGO_URL: string;
-  };
-
-  POSTGRES: {
-    POSTGRES_URL: string;
   };
 
   IS_LOCAL: boolean;
