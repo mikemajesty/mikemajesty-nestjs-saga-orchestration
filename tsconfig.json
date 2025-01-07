@@ -21,7 +21,8 @@
       "@/apps/*": ["src/apps/*"],
       "@/infra/*": ["infra/*"],
       "@/utils/*": ["utils/*"],
-      "@/libs/*": ["libs/*"]
+      "@/libs/*": ["libs/*"],
+      "@/core/*": ["apps/order/src/core/*"]
     },
   }
 }
