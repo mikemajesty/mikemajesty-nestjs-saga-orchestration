@@ -3,12 +3,13 @@ import { HealthModule } from './modules/health/module';
 import { SecretsModule } from '@/infra/secrets';
 import { LoggerModule } from '@/infra/logger';
 import { DatabaseModule } from './infra/databse';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import 'dotenv/config';
-import { KafkaModule } from './infra/kafka/modules';
+import { ConsumerModule } from './infra/consumer/modules';
+import { ProducerModule } from './infra/producer/modules';
+import { OrderModule } from './modules/order/module';
 
 @Module({
-  imports: [HealthModule, SecretsModule, LoggerModule, DatabaseModule, KafkaModule],
+  imports: [HealthModule, SecretsModule, LoggerModule, DatabaseModule, ConsumerModule, ProducerModule, OrderModule],
   controllers: [],
   providers: [],
 })

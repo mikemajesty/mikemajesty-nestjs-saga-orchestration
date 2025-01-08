@@ -2,6 +2,8 @@
 export abstract class ISecretsAdapter {
   ENV: string;
 
+  KAFKA_BROKEN: string;
+
   APPS: {
     ORDER: {
       PORT: number | string;

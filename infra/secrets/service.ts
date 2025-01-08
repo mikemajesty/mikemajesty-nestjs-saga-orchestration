@@ -14,6 +14,8 @@ export class SecretsService implements ISecretsAdapter {
 
   ENV = this.config.get<EnvEnum>('NODE_ENV') as string;
 
+  KAFKA_BROKEN = this.config.get<EnvEnum>('KAFKA_BROKEN') as string;
+
   PORT = this.config.get<number>('PORT') as number;
 
   HOST = this.config.get('HOST');
