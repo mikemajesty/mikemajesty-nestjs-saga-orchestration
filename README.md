@@ -16,7 +16,7 @@ $ docker-compose up --build
 
 ```
 Configuração feita até a aula: 
-16. Conectando as aplicações ao PostgreSQL e MongoDB
+27. Criando os consumers nas aplicações
 da Seção: Seção 3: Preparando o ambiente de desenvolvimento
 ```
 

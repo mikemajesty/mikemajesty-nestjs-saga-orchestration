@@ -6,7 +6,9 @@ import { NextFunction, Request, Response } from 'express';
 import { ErrorType, ILoggerAdapter } from '@/infra/logger';
 import { ISecretsAdapter } from '@/infra/secrets';
 import { AppModule } from './module';
-import { KafkaService } from './infra/kafka/service';
+import { TopicsEnum } from './utils/topics';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Kafka } from 'kafkajs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,7 +21,8 @@ async function bootstrap() {
     IS_PRODUCTION,
   } = app.get(ISecretsAdapter);
   const logger = app.get(ILoggerAdapter);
-
+  const secret = app.get(ISecretsAdapter);
+ 
   logger.setApplication("order");
   app.useLogger(logger);
 
@@ -47,7 +50,29 @@ async function bootstrap() {
     logger.error(error as ErrorType);
   });
 
-  // const kafka = app.get(KafkaService);
+  const kafka = new Kafka({ clientId: secret.APPS.ORDER.KAFKA.CLIENT_ID, brokers: [secret.KAFKA_BROKEN] })
+
+  const admin = kafka.admin()
+  await admin.connect()
+  await admin.createTopics({
+    topics: [
+      { topic: TopicsEnum.START_SAGA, numPartitions: 1, replicationFactor: 1 },
+      { topic: TopicsEnum.NOTIFY_ENDING, numPartitions: 1, replicationFactor: 1 },
+    ], waitForLeaders: true
+  })
+
+  await admin.disconnect()
+
+  const config = new DocumentBuilder()
+    .setTitle("order-api")
+    .addBearerAuth()
+    .setVersion("1.0")
+    .addServer(HOST)
+    .addTag('Swagger Documentation')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
 
   await app.listen(PORT, () => {
     logger.log(`🟢 ${"order"} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`);

@@ -157,27 +157,31 @@ services:
        - 8090:8090
        - 9233:9233
      command: npm run start:product-validation  --inspect-brk=0.0.0.0:9233
-  kafka:
-    container_name: kafka
-    image: obsidiandynamics/kafka
-    restart: "no"
-    ports:
-      - "2181:2181"
-      - "9092:9092"
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
     networks:
       - orchestrator-saga
     environment:
-      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092"
-      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
-      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
-      KAFKA_ZOOKEEPER_SESSION_TIMEOUT: "6000"
-      KAFKA_RESTART_ATTEMPTS: "10"
-      KAFKA_RESTART_DELAY: "5"
-      ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
-    volumes:
-      - ./data/kafka/data:/var/lib/kafka/data
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
 
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    networks:
+      - orchestrator-saga
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
   redpanda-console:
     container_name: redpanda
     image: docker.redpanda.com/vectorized/console:latest
@@ -192,7 +196,7 @@ services:
       CONFIG_FILEPATH: /tmp/config.yml
       CONSOLE_CONFIG_FILE: |
         kafka:
-          brokers: ["kafka:29092"]
+          brokers: ["kafka:9092"]
     depends_on:
       - "kafka"
   
