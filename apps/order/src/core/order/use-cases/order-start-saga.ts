@@ -15,7 +15,7 @@ export class OrderStartSagaUsecase implements IUsecase {
 
   @ValidateSchema(OrderStartSagaInputSchema)
   async execute(input: OrderStartSagaInput): Promise<void> {
-    this.logger.info({ message: "starting saga.......", obj: { payload: input } })
+    this.logger.info({ message: "............................starting saga received............................", obj: { payload: input } })
     return this.producer.publish({ messages: [{ value: JSON.stringify(input)  }], topic: TopicsEnum.START_SAGA })
   }
 }
