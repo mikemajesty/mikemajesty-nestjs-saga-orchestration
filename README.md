@@ -9,7 +9,7 @@ $ npm install
 ### Compile and run the project
 
 ```bash
-$ docker-compose up --build
+$ docker-compose up --build or yarn infra
 ```
 
 ### Informações
