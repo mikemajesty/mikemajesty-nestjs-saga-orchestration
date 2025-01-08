@@ -20,9 +20,9 @@ import { TopicsEnum } from '../../utils/topics';
 export class ConsumeModule implements OnModuleInit {
   constructor(private readonly consumer: IConsumerAdapter, private readonly endingSaga: IOrderEndingSagaAdapter, private readonly logger: ILoggerAdapter) { }
 
-  onModuleInit() {
+  async onModuleInit() {
     const topics = [TopicsEnum.NOTIFY_ENDING]
-    this.logger.info({ message: "======initializer consumer======", obj: { topics } })
+    this.logger.info({ message: "======initializer [order] consumer======", obj: { topics } })
     this.consumer.consume({ topics }, {
       eachMessage: async ({ message }) => {
         this.endingSaga.execute(message.value.toString())

@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
 import { ValidateSchema } from '@/utils/decorators';
-import { IUsecase } from '@/utils/usecase';
 import { ILoggerAdapter } from '@/infra/logger';
+import { IOrderEndingSagaAdapter } from '../../../modules/consume/adapter';
 
 export const OrderEndingSagaInputSchema = z.any();
 
-export class OrderFinishSagaUsecase implements IUsecase {
+export class OrderFinishSagaUsecase implements IOrderEndingSagaAdapter {
   constructor(private readonly logger: ILoggerAdapter) {}
 
   @ValidateSchema(OrderEndingSagaInputSchema)

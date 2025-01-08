@@ -5,6 +5,7 @@ import { IProducerAdapter } from './adapter';
 import { ISecretsAdapter, SecretsModule } from '@/infra/secrets';
 import { Kafka } from 'kafkajs';
 import { ILoggerAdapter, LoggerModule } from '@/infra/logger';
+import { TopicsEnum } from '../../utils/topics';
 
 @Module({
   imports: [SecretsModule, LoggerModule],

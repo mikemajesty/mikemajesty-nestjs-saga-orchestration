@@ -16,6 +16,8 @@ import { ILoggerAdapter, LoggerModule } from '@/infra/logger';
         
         const service = new ConsumerService(kafka, secret, logger)
 
+        await service.connect()
+
         return service
       },
       inject: [ISecretsAdapter, ILoggerAdapter]

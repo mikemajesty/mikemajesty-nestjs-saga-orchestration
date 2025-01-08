@@ -1,9 +1,9 @@
-import { OrderStartSagaInput, OrderStartSagaOutput } from '../../core/order/use-cases/order-start-saga';
+import { OrderCreateInput, OrderCreateOutput } from '../../core/order/use-cases/order-create';
 import { Swagger } from '@/utils/swagger';
 
 export const SwaggerResponse = {
   create: {
-    200: Swagger.defaultResponseJSON<OrderStartSagaOutput>({
+    200: Swagger.defaultResponseJSON<OrderCreateOutput>({
       status: 200,
       description: 'create order.'
     })
@@ -11,7 +11,7 @@ export const SwaggerResponse = {
 };
 
 export const SwaggerRequest = {
-  create: Swagger.defaultRequestJSON<OrderStartSagaInput>({
+  create: Swagger.defaultRequestJSON<OrderCreateInput>({
     "products": [
       {
         "product": {

@@ -3,8 +3,8 @@ import { Module } from '@nestjs/common';
 import { OrderController } from './controller';
 import { ConsumerModule } from '../../infra/consumer/modules';
 import { ProducerModule } from '../../infra/producer/modules';
-import { IOrderStartSagaAdapter } from './adapter';
-import { OrderStartSagaUsecase } from '@/core/order/use-cases/order-start-saga';
+import { IOrderCreateAdapter } from './adapter';
+import { OrderCreateUsecase } from '@/core/order/use-cases/order-create';
 import { IProducerAdapter } from '../../infra/producer/adapter';
 import { ILoggerAdapter, LoggerModule } from '@/infra/logger';
 
@@ -13,13 +13,13 @@ import { ILoggerAdapter, LoggerModule } from '@/infra/logger';
   controllers: [OrderController],
   providers: [
     {
-      provide: IOrderStartSagaAdapter,
+      provide: IOrderCreateAdapter,
       useFactory(producer: IProducerAdapter, logger: ILoggerAdapter) {
-          return new OrderStartSagaUsecase(producer, logger)
+          return new OrderCreateUsecase(producer, logger)
       },
       inject: [IProducerAdapter, ILoggerAdapter]
     },
   ],
-  exports: [IOrderStartSagaAdapter]
+  exports: [IOrderCreateAdapter]
 })
 export class OrderModule {}

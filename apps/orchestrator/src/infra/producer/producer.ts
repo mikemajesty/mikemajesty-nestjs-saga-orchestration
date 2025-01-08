@@ -4,6 +4,7 @@ import { Kafka, Producer, ProducerRecord, CompressionTypes, CompressionCodecs } 
 import * as SnappyCodec from "kafkajs-snappy";
 import { ILoggerAdapter } from "@/infra/logger";
 import { ProducerInput } from "../../utils/types";
+import { TopicsEnum } from "../../utils/topics";
 CompressionCodecs[CompressionTypes.Snappy] = SnappyCodec
 
 @Injectable()
@@ -14,17 +15,17 @@ export class ProducerService implements IProducerAdapter<Kafka>, OnModuleInit, O
 
   constructor(client: Kafka, private readonly logger: ILoggerAdapter) {
     this.client = client
-    this.producer = this.client.producer()
+    this.producer = this.client.producer({ allowAutoTopicCreation: true })
   }
 
   async onApplicationShutdown(signal?: string) {
-    this.logger.info({ message: `Shutting down [producer] application with signal: ${signal}` });
+    this.logger.info({ message: `Shutting down producer [orchestrator] application with signal: ${signal}` });
     await this.producer.disconnect();
   }
 
   async onModuleInit() {
     await this.producer.connect();
-    this.logger.info({ message: "Kafka [producer] connected" });
+    this.logger.info({ message: "Kafka producer [orchestrator] connected" });
   }
 
   async publish(message: ProducerInput): Promise<void> {
