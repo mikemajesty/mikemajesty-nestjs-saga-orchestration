@@ -16,54 +16,54 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
       - MONGO_INITDB_DATABASE=order-db
-  # product-db:
-  #   container_name: product-db
-  #   image: postgres
-  #   environment:
-  #     - POSTGRES_HOST=host.docker.internal
-  #     - POSTGRES_USER=admin
-  #     - POSTGRES_PASSWORD=admin
-  #     - POSTGRES_DATABASE=product-db
-  #   ports:
-  #     - '5432:5432'
-  #   volumes:
-  #     - nestjs-saga-orchestration-postgres:/data/postgres
-  #     - .docker/postgres/create-database-product-db.sql:/docker-entrypoint-initdb.d/create-database-product-db.sql
-  #   restart: always
-  #   networks:
-  #     - postgres-network-product-db
-  # inventory-db:
-  #   container_name: inventory-db
-  #   image: postgres
-  #   environment:
-  #     - POSTGRES_HOST=host.docker.internal
-  #     - POSTGRES_USER=admin
-  #     - POSTGRES_PASSWORD=admin
-  #     - POSTGRES_DATABASE=inventory-db
-  #   ports:
-  #     - '5434:5432'
-  #   volumes:
-  #     - nestjs-saga-orchestration-postgres:/data/postgres
-  #     - .docker/postgres/create-database-inventory-db.sql:/docker-entrypoint-initdb.d/create-database-inventory-db.sql
-  #   restart: always
-  #   networks:
-  #     - postgres-network-inventory-db
-  # payment-db:
-  #   container_name: payment-db
-  #   image: postgres
-  #   environment:
-  #     - POSTGRES_HOST=host.docker.internal
-  #     - POSTGRES_USER=admin
-  #     - POSTGRES_PASSWORD=admin
-  #     - POSTGRES_DATABASE=payment-db
-  #   ports:
-  #     - '5433:5432'
-  #   volumes:
-  #     - nestjs-saga-orchestration-postgres:/data/postgres
-  #     - .docker/postgres/create-database-payment-db.sql:/docker-entrypoint-initdb.d/create-database-payment-db.sql
-  #   restart: always
-  #   networks:
-  #     - postgres-network-payment-db
+  product-db:
+    container_name: product-db
+    image: postgres
+    environment:
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DATABASE=product-db
+    ports:
+      - '5432:5432'
+    volumes:
+      - nestjs-saga-orchestration-postgres:/data/postgres
+      - .docker/postgres/create-database-product-db.sql:/docker-entrypoint-initdb.d/create-database-product-db.sql
+    restart: always
+    networks:
+      - postgres-network-product-db
+  inventory-db:
+    container_name: inventory-db
+    image: postgres
+    environment:
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DATABASE=inventory-db
+    ports:
+      - '5434:5432'
+    volumes:
+      - nestjs-saga-orchestration-postgres:/data/postgres
+      - .docker/postgres/create-database-inventory-db.sql:/docker-entrypoint-initdb.d/create-database-inventory-db.sql
+    restart: always
+    networks:
+      - postgres-network-inventory-db
+  payment-db:
+    container_name: payment-db
+    image: postgres
+    environment:
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DATABASE=payment-db
+    ports:
+      - '5433:5432'
+    volumes:
+      - nestjs-saga-orchestration-postgres:/data/postgres
+      - .docker/postgres/create-database-payment-db.sql:/docker-entrypoint-initdb.d/create-database-payment-db.sql
+    restart: always
+    networks:
+      - postgres-network-payment-db
   order-service:
     container_name: order-service
     depends_on:
@@ -83,80 +83,80 @@ services:
       - 3000:3000
       - 9229:9229
     command: npm run start:order --inspect-brk=0.0.0.0:9229
-  # orchestrator-service:
-  #    container_name: orchestrator-service
-  #    depends_on:
-  #     - kafka
-  #    networks:
-  #     - orchestrator-saga
-  #    env_file:
-  #      - .env
-  #    build:
-  #      context: .
-  #      dockerfile: ./apps/orchestrator/Dockerfile
-  #    volumes:
-  #      - ".:/app"
-  #    ports:
-  #      - 8080:8080
-  #      - 9230:9230
-  #    command: npm run start:orchestrator  --inspect-brk=0.0.0.0:9230
-  # inventory-service:
-  #    container_name: inventory-service
-  #    env_file:
-  #      - .env
-  #    depends_on:
-  #     - inventory-db
-  #     - kafka
-  #    networks:
-  #     - postgres-network-inventory-db
-  #     - orchestrator-saga
-  #    build:
-  #      context: .
-  #      dockerfile: ./apps/inventory/Dockerfile
-  #    volumes:
-  #      - ".:/app"
-  #    ports:
-  #      - 8092:8092
-  #      - 9231:9231
-  #    command: npm run start:inventory  --inspect-brk=0.0.0.0:9231
-  # payment-service:
-  #    container_name: payment-service
-  #    depends_on:
-  #     - payment-db
-  #     - kafka
-  #    networks:
-  #     - postgres-network-payment-db
-  #     - orchestrator-saga
-  #    env_file:
-  #      - .env
-  #    build:
-  #      context: .
-  #      dockerfile: ./apps/payment/Dockerfile
-  #    volumes:
-  #      - ".:/app"
-  #    ports:
-  #      - 8091:8091
-  #      - 9232:9232
-  #    command: npm run start:payment  --inspect-brk=0.0.0.0:9232
-  # product-validation-service:
-  #    container_name: product-validation-service
-  #    depends_on:
-  #     - product-db
-  #     - kafka
-  #    networks:
-  #     - postgres-network-product-db
-  #     - orchestrator-saga
-  #    env_file:
-  #      - .env
-  #    build:
-  #      context: .
-  #      dockerfile: ./apps/product-validation/Dockerfile
-  #    volumes:
-  #      - ".:/app"
-  #    ports:
-  #      - 8090:8090
-  #      - 9233:9233
-  #    command: npm run start:product-validation  --inspect-brk=0.0.0.0:9233
+  orchestrator-service:
+     container_name: orchestrator-service
+     depends_on:
+      - kafka
+     networks:
+      - orchestrator-saga
+     env_file:
+       - .env
+     build:
+       context: .
+       dockerfile: ./apps/orchestrator/Dockerfile
+     volumes:
+       - ".:/app"
+     ports:
+       - 8080:8080
+       - 9230:9230
+     command: npm run start:orchestrator  --inspect-brk=0.0.0.0:9230
+  inventory-service:
+     container_name: inventory-service
+     env_file:
+       - .env
+     depends_on:
+      - inventory-db
+      - kafka
+     networks:
+      - postgres-network-inventory-db
+      - orchestrator-saga
+     build:
+       context: .
+       dockerfile: ./apps/inventory/Dockerfile
+     volumes:
+       - ".:/app"
+     ports:
+       - 8092:8092
+       - 9231:9231
+     command: npm run start:inventory  --inspect-brk=0.0.0.0:9231
+  payment-service:
+     container_name: payment-service
+     depends_on:
+      - payment-db
+      - kafka
+     networks:
+      - postgres-network-payment-db
+      - orchestrator-saga
+     env_file:
+       - .env
+     build:
+       context: .
+       dockerfile: ./apps/payment/Dockerfile
+     volumes:
+       - ".:/app"
+     ports:
+       - 8091:8091
+       - 9232:9232
+     command: npm run start:payment  --inspect-brk=0.0.0.0:9232
+  product-validation-service:
+     container_name: product-validation-service
+     depends_on:
+      - product-db
+      - kafka
+     networks:
+      - postgres-network-product-db
+      - orchestrator-saga
+     env_file:
+       - .env
+     build:
+       context: .
+       dockerfile: ./apps/product-validation/Dockerfile
+     volumes:
+       - ".:/app"
+     ports:
+       - 8090:8090
+       - 9233:9233
+     command: npm run start:product-validation  --inspect-brk=0.0.0.0:9233
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     networks:
