@@ -3,6 +3,7 @@ import { Injectable, OnApplicationShutdown, OnModuleInit } from "@nestjs/common"
 import { Kafka, Producer, ProducerRecord, CompressionTypes, CompressionCodecs } from "kafkajs";
 import * as SnappyCodec from "kafkajs-snappy";
 import { ILoggerAdapter } from "@/infra/logger";
+import { ProducerInput } from "../../utils/types";
 CompressionCodecs[CompressionTypes.Snappy] = SnappyCodec
 
 @Injectable()
@@ -26,7 +27,7 @@ export class ProducerService implements IProducerAdapter<Kafka>, OnModuleInit, O
     this.logger.info({ message: "Kafka [producer] connected" });
   }
 
-  async publish(message: ProducerRecord): Promise<void> {
+  async publish(message: ProducerInput): Promise<void> {
     try {
       this.logger.info({ message: `sending message to topic: ${message.topic}`, obj: { payload: message.messages } })
       const response = await this.producer.send(message)

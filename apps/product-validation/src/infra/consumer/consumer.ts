@@ -3,6 +3,7 @@ import { Injectable, OnApplicationShutdown } from "@nestjs/common";
 import { Consumer, ConsumerRunConfig, ConsumerSubscribeTopics, Kafka } from "kafkajs";
 import { ISecretsAdapter } from "@/infra/secrets";
 import { ILoggerAdapter } from "@/infra/logger";
+import { ConsumerInput, ConsumerRunInput } from "../../utils/types";
 
 @Injectable()
 export class ConsumerService implements IConsumerAdapter<Kafka>, OnApplicationShutdown {
@@ -22,7 +23,7 @@ export class ConsumerService implements IConsumerAdapter<Kafka>, OnApplicationSh
     }))
   }
 
-  async consume(topic: ConsumerSubscribeTopics, config: ConsumerRunConfig) {
+  async consume(topic: ConsumerInput, config: ConsumerRunInput) {
     try {
       const consumer = this.client.consumer({ groupId: this.secret.APPS.PRODUCT_VALIDATOR.KAFKA.GROUP })
       await consumer.connect()
