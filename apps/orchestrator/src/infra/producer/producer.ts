@@ -28,8 +28,9 @@ export class ProducerService implements IProducerAdapter<Kafka>, OnModuleInit, O
 
   async publish(message: ProducerRecord): Promise<void> {
     try {
+      this.logger.info({ message: `sending message to topic: ${message.topic}`, obj: { payload: message.messages } })
       const response = await this.producer.send(message)
-      this.logger.info({ message: `sending message to topic: ${message.topic}`, obj: { response, payload: message.messages } })
+      this.logger.info({ message: `message from topic response: ${message.topic}`, obj: { response } })
     } catch (error) {
       error.parameters = { payload: message, topic: message.topic }
       this.logger.error(error)
