@@ -2,12 +2,12 @@ import { Module, OnModuleInit } from '@nestjs/common';
 import { IOrderEndingSagaAdapter } from './adapter';
 import { OrderFinishSagaUsecase } from '../../core/order/use-cases/order-ending-saga';
 import { ILoggerAdapter, LoggerModule } from '@/infra/logger';
-import { NotifyEndingModule } from '../../infra/consumers/modules';
+import { NotifyEndingInfraModule } from '../../infra/consumers/modules';
 import { IConsumerAdapter } from '../../infra/consumers/adapter';
 import { TopicsEnum } from '../../utils/topics';
 
 @Module({
-  imports: [NotifyEndingModule, LoggerModule],
+  imports: [NotifyEndingInfraModule, LoggerModule],
   controllers: [],
   providers: [{
     provide: IOrderEndingSagaAdapter,
@@ -17,7 +17,7 @@ import { TopicsEnum } from '../../utils/topics';
     inject: [ILoggerAdapter]
   }]
 })
-export class ConsumeModule implements OnModuleInit {
+export class NotifyEndingModule implements OnModuleInit {
   constructor(private readonly consumer: IConsumerAdapter, private readonly endingSaga: IOrderEndingSagaAdapter, private readonly logger: ILoggerAdapter) { }
 
   async onModuleInit() {

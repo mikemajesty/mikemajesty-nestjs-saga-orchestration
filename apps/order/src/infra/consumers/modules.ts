@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { ConsumerService } from './consumer';
+import { ConsumerService } from './notify-ending';
 import { IConsumerAdapter } from './adapter';
 import { ISecretsAdapter, SecretsModule } from '@/infra/secrets';
 import { Kafka } from 'kafkajs';
@@ -24,4 +24,4 @@ import { ILoggerAdapter, LoggerModule } from '@/infra/logger';
     }],
   exports: [IConsumerAdapter]
 })
-export class NotifyEndingModule { }
+export class NotifyEndingInfraModule { }
