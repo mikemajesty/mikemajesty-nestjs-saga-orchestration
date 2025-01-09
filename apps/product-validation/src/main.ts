@@ -3,8 +3,6 @@ import { AppModule } from './module';
 import { ISecretsAdapter } from '@/infra/secrets';
 import { ErrorType, ILoggerAdapter } from '@/infra/logger';
 import { bold } from 'colorette';
-import { NextFunction, Request, Response } from 'express';
-import { RequestMethod, VersioningType } from '@nestjs/common';
 import { Kafka } from 'kafkajs';
 import { TopicsEnum } from './utils/topics';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';

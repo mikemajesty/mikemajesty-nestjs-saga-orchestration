@@ -16,7 +16,6 @@ export class OrderCreateUsecase implements IOrderCreateAdapter {
   @ValidateSchema(OrderCreateInputSchema)
   async execute(input: OrderCreateInput): Promise<any> {
     this.logger.info({ message: "............................create order received............................", obj: { payload: input } })
-    return this.kafka.send(TopicsEnum.NOTIFY_ENDING, "que coisa linda")
   }
 }
 
