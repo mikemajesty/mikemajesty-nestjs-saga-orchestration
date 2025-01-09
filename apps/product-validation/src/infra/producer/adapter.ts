@@ -1,7 +1,7 @@
-import { Kafka, ProducerRecord } from "kafkajs";
-import { ProducerInput } from "../../utils/types";
+import { ClientKafka } from "@nestjs/microservices";
+import { Observable } from "rxjs";
 
-export abstract class IProducerAdapter<T extends Kafka = Kafka> {
-  client: T
-  abstract publish(message: ProducerInput): Promise<void>
+export abstract class IProducerAdapter {
+  client: ClientKafka
+  abstract publish(payload: string): Observable<any>
 }

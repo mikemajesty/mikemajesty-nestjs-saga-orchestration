@@ -3,13 +3,11 @@ import { HealthModule } from './modules/health/module';
 import { SecretsModule } from '@/infra/secrets';
 import { LoggerModule } from '@/infra/logger';
 import { DatabaseModule } from './infra/databse';
-import 'dotenv/config';
-import { ConsumerModule } from './infra/consumer/modules';
-import { ProducerModule } from './infra/producer/modules';
 import { OrderModule } from './modules/order/module';
+import { ProducerModule } from './infra/producer/module';
 
 @Module({
-  imports: [HealthModule, SecretsModule, LoggerModule, DatabaseModule, ConsumerModule, ProducerModule, OrderModule],
+  imports: [HealthModule, SecretsModule, LoggerModule, DatabaseModule, OrderModule, ProducerModule],
   controllers: [],
   providers: [],
 })

@@ -3,13 +3,33 @@ import { ISecretsAdapter } from '@/infra/secrets';
 import { ErrorType, ILoggerAdapter } from '@/infra/logger';
 import { bold } from 'colorette';
 import { AppModule } from './module';
-import { NextFunction, Request, Response } from 'express';
-import { RequestMethod, VersioningType } from '@nestjs/common';
-import { TopicsEnum } from './utils/topics';
 import { Kafka } from 'kafkajs';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import 'dotenv/config';
+import { TopicsConsumerEnum } from './utils/topics';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          clientId: process.env.INVENTORY_SERVICE_CLIENT_ID,
+          brokers: [process.env.KAFKA_BROKEN],
+        },
+        consumer: {
+          allowAutoTopicCreation: false,
+          groupId: process.env.INVENTORY_SERVICE_GROUP_ID,
+        },
+        producer: {
+          allowAutoTopicCreation: false
+        }
+      },
+    },
+  );
+
   const {
     APPS: {
       INVENTORY: { HOST, PORT, DATABASE: { URI } }
@@ -22,22 +42,6 @@ async function bootstrap() {
 
   logger.setApplication("inventory");
   app.useLogger(logger);
-
-  app.setGlobalPrefix('api/inventory', {
-    exclude: [
-      { path: 'health', method: RequestMethod.GET },
-      { path: '/', method: RequestMethod.GET }
-    ]
-  });
-
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    if (req.originalUrl && req.originalUrl.split('/').pop() === 'favicon.ico') {
-      return res.sendStatus(204);
-    }
-    next();
-  });
-
-  app.enableVersioning({ type: VersioningType.URI });
 
   process.on('uncaughtException', (error) => {
     logger.error(error as ErrorType);
@@ -52,17 +56,13 @@ async function bootstrap() {
   await admin.connect()
   await admin.createTopics({
     topics: [
-      { topic: TopicsEnum.ORCHESTRATOR, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsEnum.INVENTORY_SUCCESS, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsEnum.INVENTORY_FAIL, numPartitions: 1, replicationFactor: 1 },
+      { topic: TopicsConsumerEnum.INVENTORY_SUCCESS, numPartitions: 1, replicationFactor: 1 },
+      { topic: TopicsConsumerEnum.INVENTORY_FAIL, numPartitions: 1, replicationFactor: 1 },
     ], waitForLeaders: true
   })
   await admin.disconnect()
 
-  await app.listen(PORT, () => {
-    logger.log(`🟢 ${"inventory"} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`);
-    if (!IS_PRODUCTION) logger.log(`🟢 Swagger listening at ${bold(`${HOST}/docs`)} 🟢`);
-  });
+  await app.listen();
 
   logger.log(`🔵 Postgres listening at ${bold(URI)}`);
 }

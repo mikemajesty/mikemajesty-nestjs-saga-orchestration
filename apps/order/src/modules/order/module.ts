@@ -1,25 +1,32 @@
 import { Module } from '@nestjs/common';
 
 import { OrderController } from './controller';
-import { ConsumerModule } from '../../infra/consumer/modules';
-import { ProducerModule } from '../../infra/producer/modules';
-import { IOrderStartSagaAdapter } from './adapter';
-import { OrderStartSagaUsecase } from '@/core/order/use-cases/order-start-saga';
-import { IProducerAdapter } from '../../infra/producer/adapter';
+import { IOrderConsumerEndingSagaAdapter, IOrderProducerCreateAdapter } from './adapter';
+import { OrderProducerCreateUsecase } from '@/core/order/use-cases/order-producer-create';
 import { ILoggerAdapter, LoggerModule } from '@/infra/logger';
-
+import { ISecretsAdapter, SecretsModule } from '@/infra/secrets';
+import { KafkaModule } from '../../infra/kafka/module';
+import { IKafkaAdapter } from '../../infra/kafka/adapter';
+import { OrderConsumerFinishSagaUsecase } from '@/core/order/use-cases/order-consumer-ending-saga';
 @Module({
-  imports: [ConsumerModule, ProducerModule, LoggerModule],
+  imports: [LoggerModule, SecretsModule, KafkaModule],
   controllers: [OrderController],
   providers: [
     {
-      provide: IOrderStartSagaAdapter,
-      useFactory(producer: IProducerAdapter, logger: ILoggerAdapter) {
-          return new OrderStartSagaUsecase(producer, logger)
+      provide: IOrderProducerCreateAdapter,
+      useFactory(kafka: IKafkaAdapter, logger: ILoggerAdapter) {
+          return new OrderProducerCreateUsecase(kafka, logger)
       },
-      inject: [IProducerAdapter, ILoggerAdapter]
+      inject: [IKafkaAdapter, ILoggerAdapter]
+    },
+    {
+      provide: IOrderConsumerEndingSagaAdapter,
+      useFactory(logger: ILoggerAdapter) {
+          return new OrderConsumerFinishSagaUsecase(logger)
+      },
+      inject: [ILoggerAdapter],
     },
   ],
-  exports: [IOrderStartSagaAdapter]
+  exports: [IOrderProducerCreateAdapter, IOrderConsumerEndingSagaAdapter]
 })
 export class OrderModule {}

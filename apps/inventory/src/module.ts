@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { HealthModule } from './modules/health/module';
 import { SecretsModule } from '@/infra/secrets';
 import { LoggerModule } from '@/infra/logger';
 import { DatabaseModule } from './infra/database';
-import { ProducerModule } from './infra/producer/modules';
-import { ConsumerModule } from './infra/consumer/modules';
+import { KafkaModule } from './infra/kafka/module';
+import { ProducerModule } from './infra/producer/module';
+import { ConsumerModule } from './consumer/module';
 
 @Module({
-  imports: [HealthModule, SecretsModule, LoggerModule, DatabaseModule, ProducerModule, ConsumerModule],
+  imports: [SecretsModule, LoggerModule, DatabaseModule, KafkaModule, ProducerModule, ConsumerModule],
   controllers: [],
   providers: [],
 })
