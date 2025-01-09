@@ -3,11 +3,10 @@ import { z } from 'zod';
 import { ValidateSchema } from '@/utils/decorators';
 import { IUsecase } from '@/utils/usecase';
 import { ILoggerAdapter } from '@/infra/logger';
-import { IOrhestratorStartSagaAdapter } from 'apps/orchestrator/src/modules/consumers/adapter';
 
 export const OrchestratorStartSagaInputSchema = z.any();
 
-export class OrchestratorStartSagaUsecase implements IOrhestratorStartSagaAdapter {
+export class OrchestratorStartSagaUsecase implements IUsecase {
 
   constructor(private readonly logger: ILoggerAdapter) {}
 

@@ -3,12 +3,10 @@ import { z } from 'zod';
 import { ValidateSchema } from '@/utils/decorators';
 import { IUsecase } from '@/utils/usecase';
 import { ILoggerAdapter } from '@/infra/logger';
-import { IOrchestratorFinishSuccessAdapter } from 'apps/orchestrator/src/modules/consumers/adapter';
-
 
 export const OrchestratorFinishSuccessInputSchema = z.any()
 
-export class OrchestratorFinishSuccessUsecase implements IOrchestratorFinishSuccessAdapter {
+export class OrchestratorFinishSuccessUsecase implements IUsecase {
   constructor(private readonly logger: ILoggerAdapter) {}
 
   @ValidateSchema(OrchestratorFinishSuccessInputSchema)

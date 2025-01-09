@@ -1,8 +1,8 @@
 import { CompressionTypes, Message } from "kafkajs"
-import { TopicsEnum } from "./topics"
+import { TopicsProducerEnum } from "./topics"
 
 export interface ProducerInput {
-  topic: TopicsEnum
+  topic: TopicsProducerEnum
   messages: Message[]
   acks?: number
   timeout?: number
@@ -10,12 +10,12 @@ export interface ProducerInput {
 }
 
 export type ConsumerInput = {
-  topics: TopicsEnum[]
+  topics: TopicsProducerEnum[]
   fromBeginning?: boolean 
 }
 
 type MessageInput = {
-  topic: TopicsEnum
+  topic: TopicsProducerEnum
   partition: number
   message: {
     key: Buffer | null

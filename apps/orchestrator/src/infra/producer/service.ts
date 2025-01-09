@@ -1,6 +1,6 @@
 import { ClientKafka, MessagePattern } from "@nestjs/microservices";
 import { IProducerAdapter } from "./adapter";
-import { TopicsEnum } from "../../utils/topics";
+import { TopicsProducerEnum } from "../../utils/topics";
 import { Observable } from "rxjs";
 import { Injectable } from "@nestjs/common";
 import { IKafkaAdapter } from "../kafka/adapter";
@@ -14,7 +14,7 @@ export class ProducerService implements IProducerAdapter {
     this.client = kafka.client
   }
   
-  publish(topic: TopicsEnum, payload: string) {
+  publish(topic: TopicsProducerEnum, payload: string) {
     const context = `Orchestrator/${ProducerService.name}`
     try {
       this.logger.info({

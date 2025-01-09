@@ -20,8 +20,12 @@ async function bootstrap() {
           brokers: [process.env.KAFKA_BROKEN],
         },
         consumer: {
+          allowAutoTopicCreation: false,
           groupId: process.env.INVENTORY_SERVICE_GROUP_ID,
         },
+        producer: {
+          allowAutoTopicCreation: false
+        }
       },
     },
   );

@@ -1,11 +1,11 @@
-import { OrderCreateInput, OrderCreateOutput } from "@/core/order/use-cases/order-create";
-import { OrderEndingSagaInput, OrderEndingSagaOutput } from "@/core/order/use-cases/order-ending-saga";
+import { OrderProducerCreateInput, OrderProducerCreateOutput } from "@/core/order/use-cases/order-producer-create";
+import { OrderConsumerEndingSagaInput, OrderConsumerEndingSagaOutput } from "@/core/order/use-cases/order-consumer-ending-saga";
 import { IUsecase } from "@/utils/usecase";
 
-export abstract class IOrderCreateAdapter implements IUsecase {
-  abstract execute(input: OrderCreateInput): Promise<any>;
+export abstract class IOrderProducerCreateAdapter implements IUsecase {
+  abstract execute(input: OrderProducerCreateInput): Promise<OrderProducerCreateOutput>;
 }
 
-export abstract class IOrderEndingSagaAdapter implements IUsecase {
-  abstract execute(input: OrderEndingSagaInput): Promise<OrderEndingSagaOutput>;
+export abstract class IOrderConsumerEndingSagaAdapter implements IUsecase {
+  abstract execute(input: OrderConsumerEndingSagaInput): Promise<OrderConsumerEndingSagaOutput>;
 }
