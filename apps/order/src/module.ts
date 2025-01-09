@@ -5,9 +5,10 @@ import { LoggerModule } from '@/infra/logger';
 import { DatabaseModule } from './infra/databse';
 import { OrderModule } from './modules/order/module';
 import { ProducerModule } from './infra/producer/module';
+import { ConsumerModule } from './modules/consumer/module';
 
 @Module({
-  imports: [HealthModule, SecretsModule, LoggerModule, DatabaseModule, OrderModule, ProducerModule],
+  imports: [HealthModule, SecretsModule, LoggerModule, DatabaseModule, OrderModule, ProducerModule, ConsumerModule],
   controllers: [],
   providers: [],
 })

@@ -3,7 +3,6 @@ import { z } from 'zod';
 
 import { ValidateSchema } from '@/utils/decorators';
 
-import { TopicsProducerEnum } from '../../../utils/topics';
 import { IOrderProducerCreateAdapter } from '../../../modules/order/adapter';
 import { IKafkaAdapter } from 'apps/order/src/infra/kafka/adapter';
 

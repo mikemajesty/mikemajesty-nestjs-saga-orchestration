@@ -4,6 +4,7 @@
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
+    "resolveJsonModule": false,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "target": "ES2021",
@@ -18,11 +19,21 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/apps/*": ["src/apps/*"],
-      "@/infra/*": ["infra/*"],
-      "@/utils/*": ["utils/*"],
-      "@/libs/*": ["libs/*"],
-      "@/core/*": ["apps/order/src/core/*"]
+      "@/apps/*": [
+        "src/apps/*"
+      ],
+      "@/infra/*": [
+        "infra/*"
+      ],
+      "@/utils/*": [
+        "utils/*"
+      ],
+      "@/libs/*": [
+        "libs/*"
+      ],
+      "@/core/*": [
+        "apps/order/src/core/*"
+      ]
     },
   }
 }

@@ -24,7 +24,7 @@ async function bootstrap() {
   const logger = app.get(ILoggerAdapter);
   const secret = app.get(ISecretsAdapter);
 
-  const microservice = app.connectMicroservice<MicroserviceOptions>({
+  const kafkaMicroservice = app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.KAFKA,
     options: {
       client: {
@@ -89,7 +89,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  await microservice.listen()
+  await kafkaMicroservice.listen()
 
   await app.listen(PORT, () => {
     logger.log(`🟢 ${"order"} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`);

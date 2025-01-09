@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 
-import { OrderController } from './controller';
-import { IOrderProducerCreateAdapter } from './adapter';
+import { ConsumerController } from './controller';
+import { IOrderConsumerEndingSagaAdapter } from './adapter';
 import { OrderProducerCreateUsecase } from '@/core/order/use-cases/order-producer-create';
 import { ILoggerAdapter, LoggerModule } from '@/infra/logger';
 import { ISecretsAdapter, SecretsModule } from '@/infra/secrets';
@@ -10,16 +10,16 @@ import { IKafkaAdapter } from '../../infra/kafka/adapter';
 import { OrderConsumerFinishSagaUsecase } from '@/core/order/use-cases/order-consumer-ending-saga';
 @Module({
   imports: [LoggerModule, SecretsModule, KafkaModule],
-  controllers: [OrderController],
+  controllers: [ConsumerController],
   providers: [
     {
-      provide: IOrderProducerCreateAdapter,
-      useFactory(kafka: IKafkaAdapter, logger: ILoggerAdapter) {
-          return new OrderProducerCreateUsecase(kafka, logger)
+      provide: IOrderConsumerEndingSagaAdapter,
+      useFactory(logger: ILoggerAdapter) {
+          return new OrderConsumerFinishSagaUsecase(logger)
       },
-      inject: [IKafkaAdapter, ILoggerAdapter]
+      inject: [ILoggerAdapter],
     },
   ],
-  exports: [IOrderProducerCreateAdapter]
+  exports: [IOrderConsumerEndingSagaAdapter]
 })
-export class OrderModule {}
+export class ConsumerModule {}
