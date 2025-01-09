@@ -4,36 +4,35 @@ import { Consumer, ConsumerRunConfig, ConsumerSubscribeTopics, Kafka } from "kaf
 import { ISecretsAdapter } from "@/infra/secrets";
 import { ILoggerAdapter } from "@/infra/logger";
 import { ConsumerInput, ConsumerRunInput } from "../../utils/types";
+import { TopicsEnum } from "../../utils/topics";
 
 @Injectable()
 export class ConsumerService implements IConsumerAdapter<Kafka>, OnApplicationShutdown {
   client: Kafka
 
-  private consumers: Consumer[] = []
+  private consumer: Consumer
 
   constructor(client: Kafka, private readonly secret: ISecretsAdapter, private readonly logger: ILoggerAdapter) {
     this.client = client
+    this.consumer = this.client.consumer({ groupId: this.secret.APPS.ORDER.KAFKA.GROUP })
   }
 
   async onApplicationShutdown(signal?: string) {
     this.logger.info({ message: `Shutting down [consumer] application with signal: ${signal}` });
     
-    await Promise.all(this.consumers.map(c => {
-      return c.disconnect()
-    }))
+    await this.consumer.disconnect()
   }
 
-  async consume(topic: ConsumerInput, config: ConsumerRunInput) {
+  async connect(){
+    await this.consumer.subscribe({ topic: TopicsEnum.NOTIFY_ENDING })
+  }
+
+  async notifyEnding(config: ConsumerRunInput) {
     try {
-      const consumer = this.client.consumer({ groupId: this.secret.APPS.ORDER.KAFKA.GROUP })
-      await consumer.connect()
-      this.logger.info({ message: `consume connected: ${topic.topics}`})
-      await consumer.subscribe(topic)
-      await consumer.run(config)
-      this.consumers.push(consumer)
-      this.logger.info({ message: `consume message from topics: ${topic.topics}`})
+      this.logger.info({ message: `consume connected: ${TopicsEnum.NOTIFY_ENDING}`})
+      await this.consumer.run(config)
     } catch (error) {
-      error.parameters = { topics: topic.topics }
+      error.parameters = { topics: TopicsEnum.NOTIFY_ENDING }
       this.logger.error(error)
     }
   }

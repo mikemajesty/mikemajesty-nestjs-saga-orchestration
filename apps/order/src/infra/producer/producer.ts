@@ -4,6 +4,7 @@ import { Kafka, Producer, ProducerRecord, CompressionTypes, CompressionCodecs } 
 import * as SnappyCodec from "kafkajs-snappy";
 import { ILoggerAdapter } from "@/infra/logger";
 import { ProducerInput } from "../../utils/types";
+import { TopicsEnum } from "../../utils/topics";
 CompressionCodecs[CompressionTypes.Snappy] = SnappyCodec
 
 @Injectable()
@@ -24,7 +25,7 @@ export class ProducerService implements IProducerAdapter<Kafka>, OnModuleInit, O
 
   async onModuleInit() {
     await this.producer.connect();
-    this.logger.info({ message: "Kafka [producer] connected" });
+    this.logger.info({ message: "Kafka [ProducerService.producer] connected" });
   }
 
   async publish(message: ProducerInput): Promise<void> {

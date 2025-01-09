@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { OrderController } from './controller';
-import { ConsumerModule } from '../../infra/consumer/modules';
+import { NotifyEndingModule } from '../../infra/consumers/modules';
 import { ProducerModule } from '../../infra/producer/modules';
 import { IOrderCreateAdapter } from './adapter';
 import { OrderCreateUsecase } from '@/core/order/use-cases/order-create';
@@ -9,7 +9,7 @@ import { IProducerAdapter } from '../../infra/producer/adapter';
 import { ILoggerAdapter, LoggerModule } from '@/infra/logger';
 
 @Module({
-  imports: [ConsumerModule, ProducerModule, LoggerModule],
+  imports: [NotifyEndingModule, ProducerModule, LoggerModule],
   controllers: [OrderController],
   providers: [
     {

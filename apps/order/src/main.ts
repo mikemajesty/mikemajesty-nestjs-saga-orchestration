@@ -9,6 +9,7 @@ import { AppModule } from './module';
 import { TopicsEnum } from './utils/topics';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Kafka } from 'kafkajs';
+import { IProducerAdapter } from './infra/producer/adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +23,7 @@ async function bootstrap() {
   } = app.get(ISecretsAdapter);
   const logger = app.get(ILoggerAdapter);
   const secret = app.get(ISecretsAdapter);
+  const producer = app.get(IProducerAdapter);
  
   logger.setApplication("order");
   app.useLogger(logger);
