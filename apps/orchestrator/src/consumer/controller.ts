@@ -1,9 +1,9 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { TopicsConsumerEnum } from '../../utils/topics';
+import { TopicsConsumerEnum } from '../utils/topics';
 
 @Controller()
-export class OrchestratorController {
+export class ConsumerController {
 
   @MessagePattern(TopicsConsumerEnum.FINISH_FAIL)
   async finishFail(@Payload() paylod: any): Promise<void> {

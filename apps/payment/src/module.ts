@@ -4,10 +4,10 @@ import { LoggerModule } from '@/infra/logger';
 import { DatabaseModule } from './infra/database';
 import { KafkaModule } from './infra/kafka/module';
 import { ProducerModule } from './infra/producer/module';
-import { PaymentConsumerModule } from './modules/payment/module';
+import { ConsumerModule } from './consumer/module';
 
 @Module({
-  imports: [SecretsModule, LoggerModule, DatabaseModule, KafkaModule, ProducerModule, PaymentConsumerModule],
+  imports: [SecretsModule, LoggerModule, DatabaseModule, KafkaModule, ProducerModule, ConsumerModule],
   controllers: [],
   providers: [],
 })
