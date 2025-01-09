@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug: @Order.api",
+      "type": "node",
+      "request": "attach",
+      "restart": true,
+      "port": 9229,
+      "address": "0.0.0.0",
+      "remoteRoot": "/app/apps/order/src",
+      "cwd": "${workspaceFolder}",
+      "localRoot": "${workspaceFolder}",
+      "skipFiles": [
+          // Ignore node_modules folder when debugging.
+          "${workspaceFolder}/node_modules/**/*.js",
+          // Ignore NodeJS when debugging.
+          "<node_internals>/**/*.js"
+      ],
+      "outFiles": [
+          "${workspaceFolder}/dist/**/**.js"
+      ]
+    }
+  ]
+}

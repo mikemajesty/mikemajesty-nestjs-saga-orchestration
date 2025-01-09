@@ -69,6 +69,7 @@ services:
     depends_on:
       - order-db
       - kafka
+      - redpanda-console
     networks:
       - mongo-network-order-db
       - orchestrator-saga
@@ -82,11 +83,12 @@ services:
     ports:
       - 3000:3000
       - 9229:9229
-    command: npm run start:order --inspect-brk=0.0.0.0:9229
+    command: npm run start:order --inspect=0.0.0.0:9229
   orchestrator-service:
      container_name: orchestrator-service
      depends_on:
       - kafka
+      - redpanda-console
      networks:
       - orchestrator-saga
      env_file:
@@ -107,6 +109,7 @@ services:
      depends_on:
       - inventory-db
       - kafka
+      - redpanda-console
      networks:
       - postgres-network-inventory-db
       - orchestrator-saga
@@ -124,6 +127,7 @@ services:
      depends_on:
       - payment-db
       - kafka
+      - redpanda-console
      networks:
       - postgres-network-payment-db
       - orchestrator-saga
@@ -143,6 +147,7 @@ services:
      depends_on:
       - product-db
       - kafka
+      - redpanda-console
      networks:
       - postgres-network-product-db
       - orchestrator-saga

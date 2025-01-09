@@ -3,14 +3,21 @@
   "version": "0.0.1",
   "description": "",
   "author": "",
+  "workspaces": {
+    "packages": [
+      "./apps/*",
+      "./infra",
+      "./utils"
+    ]
+  },
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
-    "start:order": "nest start order --debug 0.0.0.0:9229 --watch",
-    "start:orchestrator": "nest start orchestrator --debug 0.0.0.0:9230 --watch",
+    "start:order": "nest start order --debug 0.0.0.0:9229 --watch --nolazy",
+    "start:orchestrator": "nest start orchestrator --debug 0.0.0.0:9230 --watch --inspect",
     "start:inventory": "nest start inventory --debug 0.0.0.0:9231 --watch",
     "start:payment": "nest start payment --debug 0.0.0.0:9232 --watch",
     "start:product-validation": "nest start product-validation --debug 0.0.0.0:9233 --watch",

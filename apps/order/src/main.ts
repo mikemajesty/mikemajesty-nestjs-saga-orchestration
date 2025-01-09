@@ -14,7 +14,6 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  
   const {
     APPS: {
       ORDER: { HOST, PORT }
@@ -38,7 +37,7 @@ async function bootstrap() {
     }
   })
 
- 
+
   logger.setApplication("order");
   app.useLogger(logger);
 
