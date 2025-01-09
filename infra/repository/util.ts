@@ -1,10 +1,21 @@
-import { CollectionUtil } from '@/utils/collection';
 import { ApiBadRequestException } from '@/utils/exception';
 
 import { DatabaseOperationCommand, DatabaseOperationEnum } from './types';
 
+const groupBy = <T>(collection: unknown[] = [], key: string): { [key: string]: T[] } => {
+  if (!key.length) {
+    throw new ApiBadRequestException();
+  }
+
+  return collection.reduce((prev: any, next: any) => {
+    prev[next[key]] = prev[next[key]] ?? [];
+    prev[next[key]].push(next);
+    return prev;
+  }, {}) as { [key: string]: [] };
+};
+
 export const validateFindByCommandsFilter = <T>(filterList: DatabaseOperationCommand<T>[]) => {
-  const groupList = CollectionUtil.groupBy<{ command: unknown }>(filterList, 'property');
+  const groupList = groupBy<{ command: unknown }>(filterList, 'property');
 
   for (const key in groupList) {
     const commands = groupList[`${key}`].map((g) => g.command);

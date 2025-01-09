@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import paginate from 'mongoose-paginate-v2';
+import * as paginate from 'mongoose-paginate-v2';
 
 import { OrderEntity } from 'apps/order/src/core/order/entity/order';
 
@@ -17,21 +17,15 @@ export class Order {
 
   @Prop({ required: true, type: String })
   transactionId!: string;
-
-  @Prop({ required: true, type: String })
-  orderId!: string;
-
-  @Prop({ minlength: 1, required: true, type: mongoose.Schema.Types.Mixed })
-  payload!: unknown;
-
-  @Prop({ required: true, type: String })
-  source: string
-  
-  @Prop({ required: true, type: String })
-  status: string
   
   @Prop({ type: Array<mongoose.Schema.Types.Mixed> })
-  eventHistoric: unknown[]
+  products: unknown[]
+
+  @Prop({ required: true, type: Number })
+  totalAmount!: number;
+  
+  @Prop({ required: true, type: Number })
+  totalItems!: number;
 
   @Prop({ type: Date, default: null })
   deletedAt!: Date;
