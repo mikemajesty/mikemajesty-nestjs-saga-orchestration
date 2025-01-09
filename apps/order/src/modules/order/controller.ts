@@ -26,7 +26,6 @@ export class OrderController {
 
   @MessagePattern(TopicsConsumerEnum.NOTIFY_ENDING)
   async notifyEndind(@Payload() paylod: any): Promise<OrderConsumerEndingSagaOutput> {
-    console.log("ssssssssssssssssssssssssssssssssssssss");
     return this.consumerEndindSaga.execute(paylod)
   }
 }

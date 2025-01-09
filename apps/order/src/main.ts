@@ -8,11 +8,13 @@ import { ISecretsAdapter } from '@/infra/secrets';
 import { AppModule } from './module';
 import { TopicsConsumerEnum, TopicsProducerEnum } from './utils/topics';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { Kafka } from 'kafkajs';
+import { Kafka, KafkaConfig } from 'kafkajs';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  
   const {
     APPS: {
       ORDER: { HOST, PORT }
@@ -22,6 +24,20 @@ async function bootstrap() {
   } = app.get(ISecretsAdapter);
   const logger = app.get(ILoggerAdapter);
   const secret = app.get(ISecretsAdapter);
+
+  const microservice = app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        brokers: [secret.KAFKA_BROKEN],
+        clientId: secret.APPS.ORDER.KAFKA.CLIENT_ID
+      },
+      consumer: {
+        groupId: secret.APPS.ORDER.KAFKA.GROUP
+      }
+    }
+  })
+
  
   logger.setApplication("order");
   app.useLogger(logger);
@@ -73,6 +89,8 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
+
+  await microservice.listen()
 
   await app.listen(PORT, () => {
     logger.log(`🟢 ${"order"} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`);
