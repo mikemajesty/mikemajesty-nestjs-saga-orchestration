@@ -3,11 +3,10 @@ import { HealthModule } from './modules/health/module';
 import { SecretsModule } from '@/infra/secrets';
 import { LoggerModule } from '@/infra/logger';
 import { DatabaseModule } from './infra/database';
-import { ConsumerModule } from './infra/consumer/modules';
-import { ProducerModule } from './infra/producer/modules';
+import { KafkaModule } from './infra/kafka/module';
 
 @Module({
-  imports: [HealthModule, SecretsModule, LoggerModule, DatabaseModule, ConsumerModule, ProducerModule],
+  imports: [HealthModule, SecretsModule, LoggerModule, DatabaseModule, KafkaModule],
   controllers: [],
   providers: [],
 })

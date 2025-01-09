@@ -2,12 +2,10 @@ import { Module } from '@nestjs/common';
 import { HealthModule } from './modules/health/module';
 import { SecretsModule } from '@/infra/secrets';
 import { LoggerModule } from '@/infra/logger';
-import { ConsumerModule } from './infra/consumer/modules';
-import { ProducerModule } from './infra/producer/modules';
-import { ConsumeModule } from './modules/consume/module';
+import { KafkaModule } from './infra/kafka/module';
 
 @Module({
-  imports: [HealthModule, SecretsModule, LoggerModule, ConsumerModule, ProducerModule, ConsumeModule],
+  imports: [HealthModule, SecretsModule, LoggerModule, KafkaModule],
   controllers: [],
   providers: [],
 })

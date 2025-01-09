@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { ValidateSchema } from '@/utils/decorators';
 import { ILoggerAdapter } from '@/infra/logger';
-import { IOrderEndingSagaAdapter } from '../../../modules/consumers/adapter';
+import { IOrderEndingSagaAdapter } from '../../../modules/order/adapter';
 
 export const OrderEndingSagaInputSchema = z.any();
 

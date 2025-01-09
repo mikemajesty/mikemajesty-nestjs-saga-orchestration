@@ -7,9 +7,26 @@ import { RequestMethod, VersioningType } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { TopicsEnum } from './utils/topics';
 import { Kafka } from 'kafkajs';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import 'dotenv/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          clientId: process.env.PAYMENT_SERVICE_CLIENT_ID,
+          brokers: [process.env.KAFKA_BROKEN],
+        },
+        consumer: {
+          groupId: process.env.PAYMENT_SERVICE_GROUP_ID,
+        },
+      },
+    },
+  );
+
   const {
     APPS: {
       PAYMENT: { HOST, PORT, DATABASE: { URI } }
@@ -22,22 +39,6 @@ async function bootstrap() {
 
   logger.setApplication("payment");
   app.useLogger(logger);
-
-  app.setGlobalPrefix('api/payment', {
-    exclude: [
-      { path: 'health', method: RequestMethod.GET },
-      { path: '/', method: RequestMethod.GET }
-    ]
-  });
-
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    if (req.originalUrl && req.originalUrl.split('/').pop() === 'favicon.ico') {
-      return res.sendStatus(204);
-    }
-    next();
-  });
-
-  app.enableVersioning({ type: VersioningType.URI });
 
   process.on('uncaughtException', (error) => {
     logger.error(error as ErrorType);
@@ -60,10 +61,7 @@ async function bootstrap() {
   })
   await admin.disconnect()
 
-  await app.listen(PORT, () => {
-    logger.log(`🟢 ${"payment"} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`);
-    if (!IS_PRODUCTION) logger.log(`🟢 Swagger listening at ${bold(`${HOST}/docs`)} 🟢`);
-  });
+  await app.listen();
 
   logger.log(`🔵 Postgres listening at ${bold(URI)}`);
 }

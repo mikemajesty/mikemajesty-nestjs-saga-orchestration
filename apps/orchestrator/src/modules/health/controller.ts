@@ -1,9 +1,11 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Injectable } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
-@Controller(['health', "/"])
-export class HealthController {
-  @Get()
-  getHello(): string {
+@Controller()
+export class Service {
+  @MessagePattern("notify-ending")
+  getHello(@Payload() message: any): string {
+    console.log("messagemessagemessagemessagemessage", message);
     return 'orchestrator UP!';
   }
 }
