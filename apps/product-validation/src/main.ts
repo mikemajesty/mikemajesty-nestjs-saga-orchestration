@@ -4,7 +4,7 @@ import { ISecretsAdapter } from '@/infra/secrets';
 import { ErrorType, ILoggerAdapter } from '@/infra/logger';
 import { bold } from 'colorette';
 import { Kafka } from 'kafkajs';
-import { TopicsEnum } from './utils/topics';
+import { TopicsConsumerEnum, TopicsProducerEnum } from './utils/topics';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import 'dotenv/config';
 async function bootstrap() {
@@ -52,9 +52,8 @@ async function bootstrap() {
 
   await admin.createTopics({
     topics: [
-      { topic: TopicsEnum.ORCHESTRATOR, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsEnum.PRODUCT_VALIDATION_FAIL, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsEnum.PRODUCT_VALIDATION_SUCCESS, numPartitions: 1, replicationFactor: 1 },
+      { topic: TopicsConsumerEnum.PRODUCT_VALIDATION_FAIL, numPartitions: 1, replicationFactor: 1 },
+      { topic: TopicsConsumerEnum.PRODUCT_VALIDATION_SUCCESS, numPartitions: 1, replicationFactor: 1 },
     ], waitForLeaders: true
   })
   await admin.disconnect()

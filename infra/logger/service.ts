@@ -96,7 +96,7 @@ export class LoggerService implements ILoggerAdapter {
         createdAt: DateUtils.getISODateString(),
         application: bidings?.application || this.app,
         stack: error.stack?.replace(/\n/g, ''),
-        ...error?.parameters,
+        parameters: error?.parameters,
         message: typeof messages === 'string' ? [messages] : messages
       },
       typeError

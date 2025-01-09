@@ -46,16 +46,10 @@ async function bootstrap() {
   await admin.connect()
   await admin.createTopics({
     topics: [
-      { topic: TopicsEnum.BASE_ORCHESTRATOR, numPartitions: 1, replicationFactor: 1 },
+      { topic: TopicsEnum.ORCHESTRATOR, numPartitions: 1, replicationFactor: 1 },
       { topic: TopicsEnum.FINISH_FAIL, numPartitions: 1, replicationFactor: 1 },
       { topic: TopicsEnum.FINISH_SUCCESS, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsEnum.INVENTORY_FAIL, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsEnum.INVENTORY_SUCCESS, numPartitions: 1, replicationFactor: 1 },
       { topic: TopicsEnum.NOTIFY_ENDING, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsEnum.PAYMENT_FAIL, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsEnum.PAYMENT_SUCCESS, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsEnum.PRODUCT_VALIDATION_FAIL, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsEnum.PRODUCT_VALIDATION_SUCCESS, numPartitions: 1, replicationFactor: 1 },
       { topic: TopicsEnum.START_SAGA, numPartitions: 1, replicationFactor: 1 },
     ], waitForLeaders: true
   })

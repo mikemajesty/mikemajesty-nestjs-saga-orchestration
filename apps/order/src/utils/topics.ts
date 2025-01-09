@@ -1,4 +1,7 @@
-export enum TopicsEnum {
-  NOTIFY_ENDING="notify-ending",
+export enum TopicsProducerEnum {
   START_SAGA="start-saga",
+}
+
+export enum TopicsConsumerEnum {
+  NOTIFY_ENDING="notify-ending",
 }

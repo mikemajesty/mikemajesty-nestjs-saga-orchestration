@@ -6,7 +6,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ErrorType, ILoggerAdapter } from '@/infra/logger';
 import { ISecretsAdapter } from '@/infra/secrets';
 import { AppModule } from './module';
-import { TopicsEnum } from './utils/topics';
+import { TopicsConsumerEnum, TopicsProducerEnum } from './utils/topics';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Kafka } from 'kafkajs';
 
@@ -56,8 +56,8 @@ async function bootstrap() {
   await admin.connect()
   await admin.createTopics({
     topics: [
-      { topic: TopicsEnum.START_SAGA, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsEnum.NOTIFY_ENDING, numPartitions: 1, replicationFactor: 1 },
+      { topic: TopicsConsumerEnum.NOTIFY_ENDING, numPartitions: 1, replicationFactor: 1 },
+      { topic: TopicsProducerEnum.START_SAGA, numPartitions: 1, replicationFactor: 1 },
     ], waitForLeaders: true
   })
 

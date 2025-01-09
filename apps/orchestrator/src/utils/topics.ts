@@ -1,7 +1,7 @@
 
 export enum TopicsEnum {
   START_SAGA="start-saga",
-  BASE_ORCHESTRATOR="orchestrator",
+  ORCHESTRATOR="orchestrator",
   FINISH_SUCCESS="finish-success",
   FINISH_FAIL="finish-fail",
   PRODUCT_VALIDATION_SUCCESS="product-validation-success",
@@ -11,4 +11,10 @@ export enum TopicsEnum {
   PAYMENT_SUCCESS="payment-success",
   PAYMENT_FAIL="payment-fail",
   NOTIFY_ENDING="notify-ending"
+}
+
+export enum TopicsProducerEnum {
+}
+
+export enum TopicsConsumerEnum {
 }

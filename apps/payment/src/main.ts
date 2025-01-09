@@ -5,10 +5,10 @@ import { ErrorType, ILoggerAdapter } from '@/infra/logger';
 import { bold } from 'colorette';
 import { RequestMethod, VersioningType } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { TopicsEnum } from './utils/topics';
 import { Kafka } from 'kafkajs';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import 'dotenv/config';
+import { TopicsConsumerEnum } from './utils/topics';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -54,9 +54,8 @@ async function bootstrap() {
   await admin.connect()
   await admin.createTopics({
     topics: [
-      { topic: TopicsEnum.ORCHESTRATOR, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsEnum.PAYMENT_FAIL, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsEnum.PAYMENT_SUCCESS, numPartitions: 1, replicationFactor: 1 },
+      { topic: TopicsConsumerEnum.PAYMENT_FAIL, numPartitions: 1, replicationFactor: 1 },
+      { topic: TopicsConsumerEnum.PAYMENT_SUCCESS, numPartitions: 1, replicationFactor: 1 },
     ], waitForLeaders: true
   })
   await admin.disconnect()
