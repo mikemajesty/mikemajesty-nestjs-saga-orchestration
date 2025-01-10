@@ -4,12 +4,10 @@ import { BaseEntity } from '@/utils/entity';
 
 const Code = z.string()
 const UnitValue = z.number()
-const CreatedAt = z.date().nullish();
 
 export const ProductEntitySchema = z.object({
   code: Code,
   unitValue: UnitValue,
-  createdAt: CreatedAt.nullish(),
 });
 
 type Product = z.infer<typeof ProductEntitySchema>;

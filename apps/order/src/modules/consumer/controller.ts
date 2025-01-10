@@ -14,7 +14,7 @@ export class ConsumerController {
   ) {}
 
   @MessagePattern(TopicsConsumerEnum.NOTIFY_ENDING)
-  async notifyEndind(@Payload() paylod: string): Promise<OrderConsumerEndingSagaOutput> {
-    return this.consumerEndindSaga.execute(JSON.parse(paylod))
+  async notifyEndind(@Payload() paylod: EventEntity): Promise<OrderConsumerEndingSagaOutput> {
+    return this.consumerEndindSaga.execute(new EventEntity(paylod))
   }
 }

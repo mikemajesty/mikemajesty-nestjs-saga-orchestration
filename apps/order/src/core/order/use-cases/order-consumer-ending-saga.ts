@@ -6,6 +6,7 @@ import { IOrderConsumerEndingSagaAdapter } from '../../../modules/consumer/adapt
 import { EventEntity, EventEntitySchema } from '../../event/entity/event';
 import { TopicsConsumerEnum } from 'apps/order/src/utils/topics';
 import { IEventRepository } from '@/core/event/repository/event';
+import { UUIDUtils } from '@/utils/uuid';
 
 export const OrderConsumerEndingSagaInputSchema = EventEntitySchema
 
@@ -17,11 +18,12 @@ export class OrderConsumerFinishSagaUsecase implements IOrderConsumerEndingSagaA
 
   @ValidateSchema(OrderConsumerEndingSagaInputSchema)
   async execute(input: OrderConsumerEndingSagaInput): Promise<OrderConsumerEndingSagaOutput> {
+    console.log("sssssssssssssssssssssssss", input);
     this.logger.setGlobalParameters({ traceId: input.transactionId })
     this.logger.info({ message: `consumer: ${TopicsConsumerEnum.NOTIFY_ENDING}, transaction: ${input.transactionId}, orderId: ${input.id} => payload received`, obj: { payload: input } })
     input.createdAt = new Date()
-    const event = new EventEntity(input)
-    await this.eventRepository.create(new EventEntity(input))
+    const event = new EventEntity({...input, id: UUIDUtils.create() })
+    await this.eventRepository.create(event)
     this.logger.info({ message: `consumer: ${TopicsConsumerEnum.NOTIFY_ENDING}, transaction: ${input.transactionId}, orderId: ${input.id} => event created`, obj: { payload: event } })
   }
 }

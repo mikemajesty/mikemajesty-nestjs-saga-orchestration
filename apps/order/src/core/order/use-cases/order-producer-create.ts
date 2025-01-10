@@ -18,7 +18,7 @@ import { IEventRepository } from '@/core/event/repository/event';
 export const OrderProducerCreateInputSchema = z.object({
   products: z.array(OrderProductEntitySchema).min(1),
   trasactionId: z.string().nullish(),
-  createdAt: z.date().nullish(),
+  createdAt: z.date().or(z.string()).nullish().optional(),
 })
 
 export class OrderProducerCreateUsecase implements IOrderProducerCreateAdapter {
@@ -55,7 +55,7 @@ export class OrderProducerCreateUsecase implements IOrderProducerCreateAdapter {
       orderId: orderEntity.id,
       payload: orderEntity,
       transactionId: orderEntity.transactionId,
-      createdAt: new Date()
+      createdAt: date.toJSDate()
     })
 
     await this.eventRepository.create(eventEntity)

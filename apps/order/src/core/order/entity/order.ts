@@ -8,9 +8,9 @@ const Products = z.array(OrderProductEntitySchema).min(1)
 const TransactionId = z.string()
 const TotalItems = z.number().positive().nullish()
 const TotalIAmount = z.number().positive().nullish()
-const CreatedAt = z.date().nullish();
-const UpdatedAt = z.date().nullish();
-const DeletedAt = z.date().nullish();
+const CreatedAt = z.date().or(z.string()).nullish().optional();
+const UpdatedAt = z.date().or(z.string()).nullish().optional();
+const DeletedAt = z.date().or(z.string()).nullish().optional();
 
 export const OrderEntitySchema = z.object({
   id: ID,

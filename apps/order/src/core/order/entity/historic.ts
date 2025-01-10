@@ -5,7 +5,7 @@ import { BaseEntity } from '@/utils/entity';
 const Source = z.string()
 const Status = z.string()
 const Message = z.string()
-const CreatedAt = z.date().nullish();
+const CreatedAt = z.date().or(z.string()).nullish().optional();
 
 export const HistoricEntitySchema = z.object({
   source: Source,
