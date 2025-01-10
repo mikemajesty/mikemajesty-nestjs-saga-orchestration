@@ -12,7 +12,10 @@ import { Kafka, KafkaConfig } from 'kafkajs';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+    bufferLogs: true
+  });
 
   const {
     APPS: {

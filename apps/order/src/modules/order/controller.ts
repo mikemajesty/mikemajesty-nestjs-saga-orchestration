@@ -4,9 +4,6 @@ import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { SwaggerRequest, SwaggerResponse } from './swagger';
 import { OrderProducerCreateInput, OrderProducerCreateOutput } from '../../core/order/use-cases/order-producer-create';
 import { IOrderProducerCreateAdapter } from './adapter';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { TopicsConsumerEnum } from '../../utils/topics';
-import { OrderConsumerEndingSagaOutput } from '@/core/order/use-cases/order-consumer-ending-saga';
 
 @Controller("order")
 export class OrderController {

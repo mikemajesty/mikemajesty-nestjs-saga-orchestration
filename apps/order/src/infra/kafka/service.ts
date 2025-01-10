@@ -1,6 +1,6 @@
 import { ClientKafka, MessagePattern } from "@nestjs/microservices";
 import { IKafkaAdapter } from "./adapter";
-import { TopicsConsumerEnum } from "../../utils/topics";
+import { TopicsConsumerEnum, TopicsProducerEnum } from "../../utils/topics";
 import { Observable } from "rxjs";
 import { Injectable, OnModuleDestroy } from "@nestjs/common";
 
@@ -17,7 +17,9 @@ export class KafkaService implements IKafkaAdapter, OnModuleDestroy {
   }
 
   async onModuleInit() {
-    this.client.subscribeToResponseOf(TopicsConsumerEnum.NOTIFY_ENDING);
+    [TopicsConsumerEnum.NOTIFY_ENDING, TopicsProducerEnum.START_SAGA].forEach(topic => {
+      this.client.subscribeToResponseOf(topic);
+    })
     await this.client.connect();
     console.log("order subscribers:", this.client.getConsumerAssignments());
   }

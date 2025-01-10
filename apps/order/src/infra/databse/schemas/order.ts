@@ -21,10 +21,10 @@ export class Order {
   @Prop({ type: Array<mongoose.Schema.Types.Mixed> })
   products: unknown[]
 
-  @Prop({ required: true, type: Number })
+  @Prop({ required: false, type: Number, default: null })
   totalAmount!: number;
   
-  @Prop({ required: true, type: Number })
+  @Prop({ required: false, type: Number, default: null })
   totalItems!: number;
 
   @Prop({ type: Date, default: null })

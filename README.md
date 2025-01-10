@@ -1,4 +1,4 @@
-## Startup para Nestjs do Curso: Arquitetura de Microsserviços: Padrão Saga Orquestrado(Victor Hugo Negrisoli)
+## Arquitetura Saga Orquestrado
 
 ### Project setup
 
@@ -9,15 +9,7 @@ $ npm install
 ### Compile and run the project
 
 ```bash
-$ docker-compose up --build
-```
-
-### Informações
-
-```
-Configuração feita até a aula: 
-27. Criando os consumers nas aplicações
-da Seção: Seção 3: Preparando o ambiente de desenvolvimento
+$ yarn infra
 ```
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

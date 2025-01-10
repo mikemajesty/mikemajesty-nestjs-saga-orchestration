@@ -8,9 +8,9 @@ const ID = z.string().uuid();
 const TransactionId = z.string()
 const OrderId = z.string()
 const Payload = OrderEntitySchema
-const Source = z.string()
+const Source = z.string().nullish()
 const Historic = HistoricEntitySchema
-const Status = z.string()
+const Status = z.string().nullish()
 const CreatedAt = z.date().nullish();
 const UpdatedAt = z.date().nullish();
 const DeletedAt = z.date().nullish();
@@ -18,7 +18,7 @@ const DeletedAt = z.date().nullish();
 export const EventEntitySchema = z.object({
   id: ID,
   transactionId: TransactionId,
-  eventHistoric: z.array(Historic),
+  eventHistoric: z.array(Historic).optional(),
   orderId: OrderId,
   payload: Payload,
   status: Status,

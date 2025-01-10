@@ -21,11 +21,11 @@ async function bootstrap() {
           brokers: [process.env.KAFKA_BROKEN],
         },
         consumer: {
-          allowAutoTopicCreation: false,
+          allowAutoTopicCreation: true,
           groupId: process.env.PAYMENT_SERVICE_GROUP_ID,
         },
         producer: {
-          allowAutoTopicCreation: false
+          allowAutoTopicCreation: true
         }
       },
       

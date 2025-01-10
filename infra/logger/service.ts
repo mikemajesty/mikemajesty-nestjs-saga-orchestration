@@ -3,7 +3,7 @@ import { IncomingMessage, ServerResponse } from 'node:http';
 import { Injectable, InternalServerErrorException, Scope } from '@nestjs/common';
 import { blue, gray, green, isColorSupported } from 'colorette';
 import { PinoRequestConverter } from 'convert-pino-request-to-curl';
-import {  LogDescriptor, Logger, multistream, pino } from 'pino';
+import { LogDescriptor, Logger, multistream, pino } from 'pino';
 import { HttpLogger, Options, pinoHttp } from 'pino-http';
 import pinoPretty, { PrettyOptions } from 'pino-pretty';
 
@@ -14,7 +14,7 @@ import { UUIDUtils } from '@/utils/uuid';
 import { ILoggerAdapter } from './adapter';
 import { ErrorType, LogLevelEnum, MessageType } from './types';
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable({ scope: Scope.TRANSIENT })
 export class LoggerService implements ILoggerAdapter {
   private app!: string;
 

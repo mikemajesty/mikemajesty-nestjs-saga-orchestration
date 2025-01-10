@@ -15,8 +15,12 @@ import { Order, OrderDocument, OrderSchema } from '../../infra/databse/schemas/o
 import { OrderRepository } from './repository';
 import { getConnectionToken } from '@nestjs/mongoose';
 import { ConnectionName } from '../../infra/databse/enum';
+import { IEventRepository } from '@/core/order/repository/event';
+import { EventModule } from '../event/module';
+import { IProducerAdapter } from '../../infra/producer/adapter';
+import { ProducerModule } from '../../infra/producer/module';
 @Module({
-  imports: [LoggerModule, SecretsModule, KafkaModule, DatabaseModule],
+  imports: [LoggerModule, SecretsModule, KafkaModule, DatabaseModule, EventModule, ProducerModule],
   controllers: [OrderController],
   providers: [
     {
@@ -36,10 +40,10 @@ import { ConnectionName } from '../../infra/databse/enum';
     },
     {
       provide: IOrderProducerCreateAdapter,
-      useFactory(kafka: IKafkaAdapter, logger: ILoggerAdapter) {
-          return new OrderProducerCreateUsecase(kafka, logger)
+      useFactory(producer: IProducerAdapter, logger: ILoggerAdapter, orderRepository: IOrderRepository) {
+          return new OrderProducerCreateUsecase(producer, logger, orderRepository)
       },
-      inject: [IKafkaAdapter, ILoggerAdapter]
+      inject: [IProducerAdapter, ILoggerAdapter, IOrderRepository]
     },
   ],
   exports: [IOrderProducerCreateAdapter, IOrderRepository]

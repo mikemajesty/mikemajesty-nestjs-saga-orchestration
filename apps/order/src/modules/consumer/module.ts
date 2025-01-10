@@ -2,22 +2,23 @@ import { Module } from '@nestjs/common';
 
 import { ConsumerController } from './controller';
 import { IOrderConsumerEndingSagaAdapter } from './adapter';
-import { OrderProducerCreateUsecase } from '@/core/order/use-cases/order-producer-create';
 import { ILoggerAdapter, LoggerModule } from '@/infra/logger';
-import { ISecretsAdapter, SecretsModule } from '@/infra/secrets';
+import { SecretsModule } from '@/infra/secrets';
 import { KafkaModule } from '../../infra/kafka/module';
-import { IKafkaAdapter } from '../../infra/kafka/adapter';
 import { OrderConsumerFinishSagaUsecase } from '@/core/order/use-cases/order-consumer-ending-saga';
+import { EventModule } from '../event/module';
+import { IEventRepository } from '@/core/order/repository/event';
+
 @Module({
-  imports: [LoggerModule, SecretsModule, KafkaModule],
+  imports: [LoggerModule, SecretsModule, KafkaModule, EventModule],
   controllers: [ConsumerController],
   providers: [
     {
       provide: IOrderConsumerEndingSagaAdapter,
-      useFactory(logger: ILoggerAdapter) {
-          return new OrderConsumerFinishSagaUsecase(logger)
+      useFactory(logger: ILoggerAdapter, eventRepository: IEventRepository) {
+          return new OrderConsumerFinishSagaUsecase(logger, eventRepository)
       },
-      inject: [ILoggerAdapter],
+      inject: [ILoggerAdapter, IEventRepository],
     },
   ],
   exports: [IOrderConsumerEndingSagaAdapter]

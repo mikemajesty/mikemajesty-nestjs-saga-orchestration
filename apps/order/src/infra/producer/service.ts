@@ -5,6 +5,7 @@ import { Injectable } from "@nestjs/common";
 import { IKafkaAdapter } from "../kafka/adapter";
 import { ILoggerAdapter } from "@/infra/logger";
 import { Observable } from "rxjs";
+import { EventEntity } from "@/core/order/entity/event";
 
 @Injectable()
 export class ProducerService implements IProducerAdapter {
@@ -14,7 +15,7 @@ export class ProducerService implements IProducerAdapter {
     this.client = kafka.client
   }
 
-  publish(topic: TopicsProducerEnum, payload: string): Observable<any> {
+  publish(topic: TopicsProducerEnum, payload: EventEntity): Observable<any> {
     const context = `Order/${ProducerService.name}`
     try {
       this.logger.info({
@@ -23,7 +24,7 @@ export class ProducerService implements IProducerAdapter {
           payload
         }
       })
-      return this.client.send(topic, payload)
+      return this.client.send(topic, JSON.stringify(payload))
     } catch (error) {
       error.parameters = {
         topic: topic,

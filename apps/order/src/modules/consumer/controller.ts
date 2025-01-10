@@ -4,6 +4,8 @@ import { IOrderConsumerEndingSagaAdapter } from './adapter';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { TopicsConsumerEnum } from '../../utils/topics';
 import { OrderConsumerEndingSagaOutput } from '@/core/order/use-cases/order-consumer-ending-saga';
+import { IEventRepository } from '@/core/order/repository/event';
+import { EventEntity } from '@/core/order/entity/event';
 
 @Controller()
 export class ConsumerController {
@@ -13,7 +15,7 @@ export class ConsumerController {
   ) {}
 
   @MessagePattern(TopicsConsumerEnum.NOTIFY_ENDING)
-  async notifyEndind(@Payload() paylod: any): Promise<OrderConsumerEndingSagaOutput> {
+  async notifyEndind(@Payload() paylod: EventEntity): Promise<OrderConsumerEndingSagaOutput> {
     return this.consumerEndindSaga.execute(paylod)
   }
 }

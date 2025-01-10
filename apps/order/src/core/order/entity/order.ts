@@ -6,8 +6,8 @@ import { OrderProductEntity, OrderProductEntitySchema } from './order-product';
 const ID = z.string().uuid();
 const Products = z.array(OrderProductEntitySchema).min(1)
 const TransactionId = z.string()
-const TotalItems = z.number().positive()
-const TotalIAmount = z.number().positive()
+const TotalItems = z.number().positive().nullish()
+const TotalIAmount = z.number().positive().nullish()
 const CreatedAt = z.date().nullish();
 const UpdatedAt = z.date().nullish();
 const DeletedAt = z.date().nullish();

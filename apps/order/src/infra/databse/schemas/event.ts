@@ -25,13 +25,13 @@ export class Event {
   @Prop({ type: mongoose.Schema.Types.Mixed })
   payload: OrderEntity
   
-  @Prop({ required: true, type: String })
+  @Prop({ required: false, type: String })
   source: string
   
-  @Prop({ required: true, type: String })
+  @Prop({ required: false, type: String })
   status: string
   
-  @Prop({ type: Array<mongoose.Schema.Types.Mixed> })
+  @Prop({ type: Array<mongoose.Schema.Types.Mixed>, required: false, default: [] })
   eventHistoric: HistoricEntity[]
 
   @Prop({ type: Date, default: null })

@@ -9,7 +9,7 @@ const CreatedAt = z.date().nullish();
 export const ProductEntitySchema = z.object({
   code: Code,
   unitValue: UnitValue,
-  createdAt: CreatedAt,
+  createdAt: CreatedAt.nullish(),
 });
 
 type Product = z.infer<typeof ProductEntitySchema>;
