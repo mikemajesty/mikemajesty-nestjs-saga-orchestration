@@ -44,7 +44,7 @@ async function bootstrap() {
   logger.setApplication("order");
   app.useLogger(logger);
 
-  app.setGlobalPrefix('api/order', {
+  app.setGlobalPrefix('api', {
     exclude: [
       { path: 'health', method: RequestMethod.GET },
       { path: '/', method: RequestMethod.GET }

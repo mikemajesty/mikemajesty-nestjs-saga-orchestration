@@ -7,7 +7,7 @@ import { SecretsModule } from '@/infra/secrets';
 import { KafkaModule } from '../../infra/kafka/module';
 import { OrderConsumerFinishSagaUsecase } from '@/core/order/use-cases/order-consumer-ending-saga';
 import { EventModule } from '../event/module';
-import { IEventRepository } from '@/core/order/repository/event';
+import { IEventRepository } from '@/core/event/repository/event';
 
 @Module({
   imports: [LoggerModule, SecretsModule, KafkaModule, EventModule],

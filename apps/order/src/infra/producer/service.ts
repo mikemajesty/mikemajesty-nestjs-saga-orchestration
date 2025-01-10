@@ -5,7 +5,7 @@ import { Injectable } from "@nestjs/common";
 import { IKafkaAdapter } from "../kafka/adapter";
 import { ILoggerAdapter } from "@/infra/logger";
 import { Observable } from "rxjs";
-import { EventEntity } from "@/core/order/entity/event";
+import { EventEntity } from "@/core/event/entity/event";
 
 @Injectable()
 export class ProducerService implements IProducerAdapter {

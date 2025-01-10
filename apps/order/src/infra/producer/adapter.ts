@@ -1,7 +1,7 @@
 import { ClientKafka } from "@nestjs/microservices";
 import { TopicsProducerEnum } from "../../utils/topics";
 import { Observable } from "rxjs";
-import { EventEntity } from "@/core/order/entity/event";
+import { EventEntity } from "@/core/event/entity/event";
 
 export abstract class IProducerAdapter {
   client: ClientKafka

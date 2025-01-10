@@ -1,4 +1,4 @@
-import { EventEntity } from '@/core/order/entity/event';
+import { EventEntity } from '@/core/event/entity/event';
 import { HistoricEntity } from '@/core/order/entity/historic';
 import { OrderEntity } from '@/core/order/entity/order';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';

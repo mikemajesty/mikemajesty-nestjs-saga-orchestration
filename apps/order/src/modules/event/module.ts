@@ -6,13 +6,16 @@ import { ILoggerAdapter, LoggerModule } from '@/infra/logger';
 
 import { EventRepository } from './repository';
 import { DatabaseModule } from '../../infra/databse';
-import { IEventRepository } from '@/core/order/repository/event';
 import { Event, EventDocument, EventSchema } from '../../infra/databse/schemas/event';
 import { ConnectionName } from '../../infra/databse/enum';
+import { IEventRepository } from '@/core/event/repository/event';
+import { IEventListAdapter } from './adapter';
+import { EventListUsecase } from '@/core/event/use-cases/event-list';
+import { EventController } from './controller';
 
 @Module({
   imports: [LoggerModule],
-  controllers: [],
+  controllers: [EventController],
   providers: [
     {
       provide: IEventRepository,
@@ -27,8 +30,15 @@ import { ConnectionName } from '../../infra/databse/enum';
         return new EventRepository(repository);
       },
       inject: [getConnectionToken(ConnectionName.ORDER)]
+    },
+    {
+      provide: IEventListAdapter,
+      useFactory(repository: IEventRepository) {
+        return new EventListUsecase(repository)
+      },
+      inject: [IEventRepository]
     }
   ],
-  exports: [IEventRepository]
+  exports: [IEventRepository, IEventListAdapter]
 })
-export class EventModule {}
+export class EventModule { }

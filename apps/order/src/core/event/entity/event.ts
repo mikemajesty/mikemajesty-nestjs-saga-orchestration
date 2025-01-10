@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 import { BaseEntity } from '@/utils/entity';
-import { OrderEntity, OrderEntitySchema } from './order';
-import { HistoricEntity, HistoricEntitySchema } from './historic';
+import { OrderEntity, OrderEntitySchema } from '../../order/entity/order';
+import { HistoricEntity, HistoricEntitySchema } from '../../order/entity/historic';
 
 const ID = z.string().uuid();
 const TransactionId = z.string()

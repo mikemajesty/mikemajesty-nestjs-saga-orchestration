@@ -7,7 +7,7 @@ import { IOrderProducerCreateAdapter } from '../../../modules/order/adapter';
 import { OrderProductEntity, OrderProductEntitySchema } from '../entity/order-product';
 import { UUIDUtils } from '@/utils/uuid';
 import { OrderEntity } from '../entity/order';
-import { EventEntity } from '../entity/event';
+import { EventEntity } from '../../event/entity/event';
 import { IOrderRepository } from '../repository/order';
 import { IProducerAdapter } from 'apps/order/src/infra/producer/adapter';
 import { TopicsProducerEnum } from 'apps/order/src/utils/topics';
@@ -24,9 +24,9 @@ export class OrderProducerCreateUsecase implements IOrderProducerCreateAdapter {
 
   constructor(
     private readonly producer: IProducerAdapter,
-    private readonly logger: ILoggerAdapter,
-    private readonly orderRepository: IOrderRepository,
-  ) { }
+    private  readonly logger: ILoggerAdapter,
+    private  readonly orderRepository: IOrderRepository,
+  ) {}
 
   @ValidateSchema(OrderProducerCreateInputSchema)
   async execute(input: OrderProducerCreateInput): Promise<any> {
@@ -36,11 +36,9 @@ export class OrderProducerCreateUsecase implements IOrderProducerCreateAdapter {
 
     this.logger.setGlobalParameters({ traceId: transactionId })
 
-    this.logger.info({
-      message: `saga: ${TopicsProducerEnum.START_SAGA} started with traceId: ${transactionId}`, obj: {
-        paylod: input
-      }
-    })
+    this.logger.info({ message: `saga: ${TopicsProducerEnum.START_SAGA} started with traceId: ${transactionId}`, obj: {
+      paylod: input
+    } })
 
     const orderEntity = new OrderEntity({
       products,
@@ -61,7 +59,7 @@ export class OrderProducerCreateUsecase implements IOrderProducerCreateAdapter {
     this.logger.info({ message: `event created with id: ${eventEntity.id}` })
 
     await firstValueFrom(
-      this.producer.publish(TopicsProducerEnum.START_SAGA, eventEntity)
+       this.producer.publish(TopicsProducerEnum.START_SAGA, eventEntity)
     );
   }
 }

@@ -5,7 +5,7 @@ import { SwaggerRequest, SwaggerResponse } from './swagger';
 import { OrderProducerCreateInput, OrderProducerCreateOutput } from '../../core/order/use-cases/order-producer-create';
 import { IOrderProducerCreateAdapter } from './adapter';
 
-@Controller("order")
+@Controller("orders")
 export class OrderController {
 
   constructor(

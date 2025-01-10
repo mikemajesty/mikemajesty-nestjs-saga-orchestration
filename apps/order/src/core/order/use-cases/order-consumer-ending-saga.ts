@@ -3,9 +3,9 @@ import { z } from 'zod';
 import { ValidateSchema } from '@/utils/decorators';
 import { ILoggerAdapter } from '@/infra/logger';
 import { IOrderConsumerEndingSagaAdapter } from '../../../modules/consumer/adapter';
-import { IEventRepository } from '../repository/event';
-import { EventEntity, EventEntitySchema } from '../entity/event';
+import { EventEntity, EventEntitySchema } from '../../event/entity/event';
 import { TopicsConsumerEnum } from 'apps/order/src/utils/topics';
+import { IEventRepository } from '@/core/event/repository/event';
 
 export const OrderConsumerEndingSagaInputSchema = EventEntitySchema
 
