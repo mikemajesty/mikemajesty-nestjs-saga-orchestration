@@ -18,21 +18,26 @@ import { ErrorType, LogLevelEnum, MessageType } from './types';
 export class LoggerService implements ILoggerAdapter {
   private app!: string;
 
-  logger!: HttpLogger;
+  logger!: Logger;
 
   async connect(): Promise<void> {
     const pinoLogger = pino(
       {
-        level: LogLevelEnum.trace
-      },
-      multistream([
-        {
-          level: LogLevelEnum.trace,
-          stream: pinoPretty(this.getPinoConfig())
+        level: LogLevelEnum.trace,
+        transport: {
+          targets: [{
+            target: "pino-pretty",
+            level: "trace",
+            options: {
+              colorize: true,
+              levelFirst: true,
+              ignore: 'pid,hostname',
+            }
+          }]
         }
-      ])
+      }
     );
-    this.logger = pinoHttp(pinoLogger);
+    this.logger = pinoLogger;
   }
 
   setApplication(app: string): void {
@@ -40,36 +45,36 @@ export class LoggerService implements ILoggerAdapter {
   }
 
   setGlobalParameters(input: object): void {
-    this.logger.logger.setBindings(input);
+    this.logger.setBindings(input);
   }
 
   getGlobalParameters<T>(): T {
-    return this.logger.logger.bindings() as T;
+    return this.logger.bindings() as T;
   }
 
   log(message: string): void {
-    this.logger.logger.info(green(message));
+    this.logger.info(green(message));
   }
 
   debug({ message, context, obj = {} }: MessageType): void {
     Object.assign(obj, { context, createdAt: DateUtils.getISODateString() });
-    this.logger.logger.debug([obj, gray(message)].find(Boolean), gray(message));
+    this.logger.debug([obj, gray(message)].find(Boolean), gray(message));
   }
 
   info({ message, context, obj = {} }: MessageType): void {
     Object.assign(obj, { context, createdAt: DateUtils.getISODateString() });
-    this.logger.logger.info([obj, message].find(Boolean), message);
+    this.logger.info([obj, message].find(Boolean), message);
   }
 
   warn({ message, context, obj = {} }: MessageType): void {
     Object.assign(obj, { context, createdAt: DateUtils.getISODateString() });
-    this.logger.logger.warn([obj, message].find(Boolean), message);
+    this.logger.warn([obj, message].find(Boolean), message);
   }
 
   error(error: ErrorType, message?: string): void {
     const errorResponse = this.getErrorResponse(error);
 
-    const bidings = this.logger.logger.bindings();
+    const bidings = this.logger.bindings();
 
     const response =
       error instanceof BaseException
@@ -87,7 +92,7 @@ export class LoggerService implements ILoggerAdapter {
     }
 
     const typeError = [type, error?.name === 'ZodError' ? ApiBadRequestException.name : error?.name].find(Boolean);
-    this.logger.logger.error(
+    this.logger.error(
       {
         ...response,
         context: error?.context,
@@ -111,7 +116,7 @@ export class LoggerService implements ILoggerAdapter {
     }[error?.name];
     const typeError = [type, error?.name === 'ZodError' ? ApiBadRequestException.name : error?.name].find(Boolean);
 
-    this.logger.logger.fatal(
+    this.logger.fatal(
       {
         message: typeof messages === 'string' ? [messages] : messages,
         context: error?.context,
@@ -182,7 +187,7 @@ export class LoggerService implements ILoggerAdapter {
 
         const path = `${request.protocol}://${req.headers.host}${req.url}`;
 
-        this.logger.logger.setBindings({
+        this.logger.setBindings({
           traceid,
           application: this.app,
           context,
@@ -240,6 +245,6 @@ export class LoggerService implements ILoggerAdapter {
 
   private getTraceId(error: string | { traceid: string }): string {
     if (typeof error === 'string') return UUIDUtils.create();
-    return [error.traceid, this.logger.logger.bindings()?.traceid].find(Boolean);
+    return [error.traceid, this.logger.bindings()?.traceid].find(Boolean);
   }
 }

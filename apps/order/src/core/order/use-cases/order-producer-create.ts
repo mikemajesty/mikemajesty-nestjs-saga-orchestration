@@ -12,6 +12,7 @@ import { IOrderRepository } from '../repository/order';
 import { IProducerAdapter } from 'apps/order/src/infra/producer/adapter';
 import { TopicsProducerEnum } from 'apps/order/src/utils/topics';
 import { firstValueFrom } from 'rxjs';
+import { DateUtils } from '@/utils/date';
 
 export const OrderProducerCreateInputSchema = z.object({
   products: z.array(OrderProductEntitySchema).min(1),
@@ -23,27 +24,32 @@ export class OrderProducerCreateUsecase implements IOrderProducerCreateAdapter {
 
   constructor(
     private readonly producer: IProducerAdapter,
-    private  readonly logger: ILoggerAdapter,
-    private  readonly orderRepository: IOrderRepository,
-  ) {}
+    private readonly logger: ILoggerAdapter,
+    private readonly orderRepository: IOrderRepository,
+  ) { }
 
   @ValidateSchema(OrderProducerCreateInputSchema)
   async execute(input: OrderProducerCreateInput): Promise<any> {
-    const date = new Date()
+    const date = DateUtils.getDate()
     const products = input.products.map(p => new OrderProductEntity(p))
-    const transactionId = `${date.getUTCMinutes()}_${UUIDUtils.create()}`
+    const transactionId = `${DateUtils.date.now().toMillis()}_${UUIDUtils.create()}`
 
     this.logger.setGlobalParameters({ traceId: transactionId })
 
-    this.logger.info({ message: `saga: ${TopicsProducerEnum.START_SAGA} started with traceId: ${transactionId}` })
+    this.logger.info({
+      message: `saga: ${TopicsProducerEnum.START_SAGA} started with traceId: ${transactionId}`, obj: {
+        paylod: input
+      }
+    })
 
     const orderEntity = new OrderEntity({
       products,
       transactionId,
-      createdAt: date
+      createdAt: date.toJSDate()
     })
 
     await this.orderRepository.create(orderEntity)
+    this.logger.info({ message: `order created with id: ${orderEntity.id}` })
 
     const eventEntity = new EventEntity({
       orderId: orderEntity.id,
@@ -52,8 +58,10 @@ export class OrderProducerCreateUsecase implements IOrderProducerCreateAdapter {
       createdAt: new Date()
     })
 
+    this.logger.info({ message: `event created with id: ${eventEntity.id}` })
+
     await firstValueFrom(
-       this.producer.publish(TopicsProducerEnum.START_SAGA, eventEntity)
+      this.producer.publish(TopicsProducerEnum.START_SAGA, eventEntity)
     );
   }
 }

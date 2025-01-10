@@ -7,7 +7,7 @@ import { LoggerService } from './service';
 import { LogLevelEnum } from './types';
 
 @Module({
-  imports: [forwardRef(() => SecretsModule)],
+  imports: [SecretsModule],
   providers: [
     {
       provide: ILoggerAdapter,

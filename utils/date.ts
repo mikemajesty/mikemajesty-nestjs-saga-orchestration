@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 
 export class DateUtils {
+  static date = DateTime
   static getDateStringWithFormat(input: Partial<GetDateWithFormatFormatInput> = {}): string {
     if (!input?.date) {
       Object.assign(input, { date: DateUtils.getJSDate() });
