@@ -57,17 +57,17 @@ export class LoggerService implements ILoggerAdapter {
   }
 
   debug({ message, context, obj = {} }: MessageType): void {
-    Object.assign(obj, { context, createdAt: DateUtils.getISODateString() });
+    Object.assign(obj, { context: context ?? obj?.["context"], createdAt: DateUtils.getISODateString() });
     this.logger.debug([obj, gray(message)].find(Boolean), gray(message));
   }
 
   info({ message, context, obj = {} }: MessageType): void {
-    Object.assign(obj, { context, createdAt: DateUtils.getISODateString() });
+    Object.assign(obj, { context: context ?? obj?.["context"], createdAt: DateUtils.getISODateString() });
     this.logger.info([obj, message].find(Boolean), message);
   }
 
   warn({ message, context, obj = {} }: MessageType): void {
-    Object.assign(obj, { context, createdAt: DateUtils.getISODateString() });
+    Object.assign(obj, { context: context ?? obj?.["context"], createdAt: DateUtils.getISODateString() });
     this.logger.warn([obj, message].find(Boolean), message);
   }
 

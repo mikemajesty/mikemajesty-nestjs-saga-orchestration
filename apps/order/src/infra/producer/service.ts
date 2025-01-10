@@ -16,7 +16,7 @@ export class ProducerService implements IProducerAdapter {
   }
 
   publish(topic: TopicsProducerEnum, payload: EventEntity): Observable<any> {
-    const context = `Order/${ProducerService.name}`
+    const context = `Order/ProducerService`
     try {
       this.logger.info({
         message: `message received from: ${topic}`, obj: {

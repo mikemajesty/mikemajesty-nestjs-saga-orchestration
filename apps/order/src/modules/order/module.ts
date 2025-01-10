@@ -18,6 +18,7 @@ import { ConnectionName } from '../../infra/databse/enum';
 import { EventModule } from '../event/module';
 import { IProducerAdapter } from '../../infra/producer/adapter';
 import { ProducerModule } from '../../infra/producer/module';
+import { IEventRepository } from '@/core/event/repository/event';
 @Module({
   imports: [LoggerModule, SecretsModule, KafkaModule, DatabaseModule, EventModule, ProducerModule],
   controllers: [OrderController],
@@ -39,10 +40,10 @@ import { ProducerModule } from '../../infra/producer/module';
     },
     {
       provide: IOrderProducerCreateAdapter,
-      useFactory(producer: IProducerAdapter, logger: ILoggerAdapter, orderRepository: IOrderRepository) {
-          return new OrderProducerCreateUsecase(producer, logger, orderRepository)
+      useFactory(producer: IProducerAdapter, logger: ILoggerAdapter, orderRepository: IOrderRepository, eventRepository: IEventRepository) {
+          return new OrderProducerCreateUsecase(producer, logger, orderRepository, eventRepository)
       },
-      inject: [IProducerAdapter, ILoggerAdapter, IOrderRepository]
+      inject: [IProducerAdapter, ILoggerAdapter, IOrderRepository, IEventRepository]
     },
   ],
   exports: [IOrderProducerCreateAdapter, IOrderRepository]

@@ -13,6 +13,7 @@ import { IProducerAdapter } from 'apps/order/src/infra/producer/adapter';
 import { TopicsProducerEnum } from 'apps/order/src/utils/topics';
 import { firstValueFrom } from 'rxjs';
 import { DateUtils } from '@/utils/date';
+import { IEventRepository } from '@/core/event/repository/event';
 
 export const OrderProducerCreateInputSchema = z.object({
   products: z.array(OrderProductEntitySchema).min(1),
@@ -26,6 +27,7 @@ export class OrderProducerCreateUsecase implements IOrderProducerCreateAdapter {
     private readonly producer: IProducerAdapter,
     private  readonly logger: ILoggerAdapter,
     private  readonly orderRepository: IOrderRepository,
+    private  readonly eventRepository: IEventRepository,
   ) {}
 
   @ValidateSchema(OrderProducerCreateInputSchema)
@@ -56,6 +58,7 @@ export class OrderProducerCreateUsecase implements IOrderProducerCreateAdapter {
       createdAt: new Date()
     })
 
+    await this.eventRepository.create(eventEntity)
     this.logger.info({ message: `event created with id: ${eventEntity.id}` })
 
     await firstValueFrom(
