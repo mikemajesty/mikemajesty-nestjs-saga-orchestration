@@ -18,13 +18,10 @@ export class OrderConsumerFinishSagaUsecase implements IOrderConsumerEndingSagaA
 
   @ValidateSchema(OrderConsumerEndingSagaInputSchema)
   async execute(input: OrderConsumerEndingSagaInput): Promise<OrderConsumerEndingSagaOutput> {
-    console.log("sssssssssssssssssssssssss", input);
     this.logger.setGlobalParameters({ traceId: input.transactionId })
     this.logger.info({ message: `consumer: ${TopicsConsumerEnum.NOTIFY_ENDING}, transaction: ${input.transactionId}, orderId: ${input.id} => payload received`, obj: { payload: input } })
-    input.createdAt = new Date()
-    const event = new EventEntity({...input, id: UUIDUtils.create() })
-    await this.eventRepository.create(event)
-    this.logger.info({ message: `consumer: ${TopicsConsumerEnum.NOTIFY_ENDING}, transaction: ${input.transactionId}, orderId: ${input.id} => event created`, obj: { payload: event } })
+    await this.eventRepository.updateOne({ orderId: input.orderId, transactionId: input.transactionId }, input)
+    this.logger.info({ message: `consumer: ${TopicsConsumerEnum.NOTIFY_ENDING}, transaction: ${input.transactionId}, orderId: ${input.id} => event created`, obj: { payload: input } })
   }
 }
 
