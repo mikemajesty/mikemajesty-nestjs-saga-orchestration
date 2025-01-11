@@ -1,3 +1,6 @@
 {
-  "name": "@app/order.api"
+  "name": "@app/order.api",
+  "scripts": {
+    "docker:order": "docker-compose up --no-deps --build order-db zookeeper kafka redpanda-console order-service"
+  }
 }

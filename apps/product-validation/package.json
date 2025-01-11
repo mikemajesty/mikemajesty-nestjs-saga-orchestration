@@ -1,3 +1,6 @@
 {
-  "name": "@app/product-valition.api"
+  "name": "@app/product-valition.api",
+  "scripts": {
+    "docker:product-validation": "docker-compose up --no-deps --build product-db zookeeper kafka redpanda-console product-validation-service"
+  }
 }

@@ -1,3 +1,6 @@
 {
-  "name": "@app/inventory.api"
+  "name": "@app/inventory.api",
+  "scripts": {
+    "docker:inventory": "docker-compose up --no-deps --build inventory-db zookeeper kafka redpanda-console inventory-service"
+  }
 }

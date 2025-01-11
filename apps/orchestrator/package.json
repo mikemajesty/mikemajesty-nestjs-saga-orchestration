@@ -1,3 +1,6 @@
 {
-  "name": "@app/orchestrator.api"
+  "name": "@app/orchestrator.api",
+  "scripts": {
+    "docker:orchestrator": "docker-compose up --no-deps --build zookeeper kafka redpanda-console orchestrator-service"
+  }
 }

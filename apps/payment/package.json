@@ -1,3 +1,6 @@
 {
-  "name": "@app/payment.api"
+  "name": "@app/payment.api",
+  "scripts": {
+    "docker:payment": "docker-compose up --no-deps --build payment-db zookeeper kafka redpanda-console payment-service"
+  }
 }

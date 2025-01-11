@@ -44,7 +44,7 @@ async function bootstrap() {
     logger.error(error as ErrorType);
   });
 
-   const kafka = new Kafka({ clientId: secret.APPS.ORCHESTRATOR.KAFKA.CLIENT_ID, brokers: [secret.KAFKA_BROKEN] })
+  const kafka = new Kafka({ clientId: secret.APPS.ORCHESTRATOR.KAFKA.CLIENT_ID, brokers: [secret.KAFKA_BROKEN] })
 
   const admin = kafka.admin()
   await admin.connect()
