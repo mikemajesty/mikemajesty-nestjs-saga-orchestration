@@ -2,7 +2,7 @@ import { ClientKafka, MessagePattern } from "@nestjs/microservices";
 import { IKafkaAdapter } from "./adapter";
 import { Observable } from "rxjs";
 import { Injectable, OnModuleDestroy } from "@nestjs/common";
-import { TopicsConsumerEnum } from "../../utils/topics";
+import { TopicsConsumerEnum, TopicsProducerEnum } from "../../utils/topics";
 
 @Injectable()
 export class KafkaService implements IKafkaAdapter, OnModuleDestroy {
@@ -17,7 +17,7 @@ export class KafkaService implements IKafkaAdapter, OnModuleDestroy {
   }
 
   async onModuleInit() {
-    [TopicsConsumerEnum.PRODUCT_VALIDATION_FAIL, TopicsConsumerEnum.PRODUCT_VALIDATION_SUCCESS].forEach(topic => {
+    [TopicsConsumerEnum.PRODUCT_VALIDATION_FAIL, TopicsConsumerEnum.PRODUCT_VALIDATION_SUCCESS, TopicsProducerEnum.ORCHESTRATOR].forEach(topic => {
       this.client.subscribeToResponseOf(topic);
     })
     await this.client.connect();
