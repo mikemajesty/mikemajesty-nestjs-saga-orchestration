@@ -51,19 +51,19 @@ async function bootstrap() {
     logger.error(error as ErrorType);
   });
 
-  const kafka = new Kafka({ clientId: secret.APPS.ORCHESTRATOR.KAFKA.CLIENT_ID, brokers: [secret.KAFKA_BROKEN] })
+  //const kafka = new Kafka({ clientId: secret.APPS.ORCHESTRATOR.KAFKA.CLIENT_ID, brokers: [secret.KAFKA_BROKEN] })
 
-  const admin = kafka.admin()
-  await admin.connect()
-  await admin.createTopics({
-    topics: [
-      { topic: TopicsConsumerEnum.ORCHESTRATOR, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsConsumerEnum.FINISH_FAIL, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsConsumerEnum.FINISH_SUCCESS, numPartitions: 1, replicationFactor: 1 },
-      { topic: TopicsConsumerEnum.START_SAGA, numPartitions: 1, replicationFactor: 1 },
-    ], waitForLeaders: true
-  })
-  await admin.disconnect()
+  // const admin = kafka.admin()
+  // await admin.connect()
+  // await admin.createTopics({
+  //   topics: [
+  //     { topic: TopicsConsumerEnum.ORCHESTRATOR, numPartitions: 1, replicationFactor: 1 },
+  //     { topic: TopicsConsumerEnum.FINISH_FAIL, numPartitions: 1, replicationFactor: 1 },
+  //     { topic: TopicsConsumerEnum.FINISH_SUCCESS, numPartitions: 1, replicationFactor: 1 },
+  //     { topic: TopicsConsumerEnum.START_SAGA, numPartitions: 1, replicationFactor: 1 },
+  //   ], waitForLeaders: true
+  // })
+  // await admin.disconnect()
   await app.listen()
 }
 bootstrap();

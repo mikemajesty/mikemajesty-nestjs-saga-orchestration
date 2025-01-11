@@ -17,7 +17,6 @@ export class ConsumerController {
   async notifyEndind(@Payload() paylod: EventEntity, @Ctx() context: KafkaContext): Promise<OrderConsumerEndingSagaOutput> {
     await this.consumerEndindSaga.execute(new EventEntity(paylod))
     const { offset } = context.getMessage();
-    console.log("---------------",offset );
     const partition = context.getPartition();
     const topic = context.getTopic();
     const consumer = context.getConsumer();
