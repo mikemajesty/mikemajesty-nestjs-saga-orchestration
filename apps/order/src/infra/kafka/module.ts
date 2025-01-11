@@ -22,7 +22,17 @@ import { KafkaService } from './service';
               },
               consumer: {
                 groupId: secret.APPS.ORDER.KAFKA.GROUP,
+                readUncommitted: true,
+                retry: {
+                  retries: 5,
+                }
               },
+              producer: {
+                allowAutoTopicCreation: true,
+              },
+              subscribe: {
+                fromBeginning: true,
+              }
             },
           };
         },

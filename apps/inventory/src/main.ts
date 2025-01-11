@@ -22,6 +22,13 @@ async function bootstrap() {
         consumer: {
           allowAutoTopicCreation: true,
           groupId: process.env.INVENTORY_SERVICE_GROUP_ID,
+          readUncommitted: true,
+          retry: {
+            retries: 5,
+          }
+        },
+        subscribe: {
+          fromBeginning: true
         },
         producer: {
           allowAutoTopicCreation: true

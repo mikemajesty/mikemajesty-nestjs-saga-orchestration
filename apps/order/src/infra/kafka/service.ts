@@ -21,6 +21,7 @@ export class KafkaService implements IKafkaAdapter, OnModuleDestroy {
       this.client.subscribeToResponseOf(topic);
     })
     await this.client.connect();
+    // this.client.commitOffsets([{ offset: "earliest", topic: TopicsConsumerEnum.NOTIFY_ENDING, partition: 0 }])
     console.log("order subscribers:", this.client.getConsumerAssignments());
   }
 }

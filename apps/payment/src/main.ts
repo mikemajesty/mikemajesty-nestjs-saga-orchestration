@@ -23,10 +23,17 @@ async function bootstrap() {
         consumer: {
           allowAutoTopicCreation: true,
           groupId: process.env.PAYMENT_SERVICE_GROUP_ID,
+          readUncommitted: true,
+          retry: {
+            retries: 5,
+          }
         },
         producer: {
-          allowAutoTopicCreation: true
-        }
+          allowAutoTopicCreation: true,
+        },
+        subscribe: {
+          fromBeginning: true,
+        },
       },
       
     },

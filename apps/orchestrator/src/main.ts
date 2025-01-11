@@ -23,10 +23,17 @@ async function bootstrap() {
         consumer: {
           allowAutoTopicCreation: true,
           groupId: process.env.ORCHESTRATOR_SERVICE_GROUP_ID,
+          readUncommitted: true,
+          retry: {
+            retries: 5,
+          },
         },
         producer: {
-          allowAutoTopicCreation: true
-        }
+          allowAutoTopicCreation: true,
+        },
+        subscribe: {
+          fromBeginning: true,
+        },
       },
     },
   );
@@ -57,7 +64,6 @@ async function bootstrap() {
     ], waitForLeaders: true
   })
   await admin.disconnect()
-
   await app.listen()
 }
 bootstrap();

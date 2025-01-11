@@ -21,7 +21,18 @@ import { KafkaService } from './service';
                 brokers: [secret.KAFKA_BROKEN],
               },
               consumer: {
+                allowAutoTopicCreation: true,
                 groupId: secret.APPS.PAYMENT.KAFKA.GROUP,
+                readUncommitted: true,
+                retry: {
+                  retries: 5,
+                }
+              },
+              producer: {
+                allowAutoTopicCreation: true,
+              },
+              subscribe: {
+                fromBeginning: true,
               },
             },
           };

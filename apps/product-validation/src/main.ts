@@ -8,7 +8,6 @@ import { TopicsConsumerEnum, TopicsProducerEnum } from './utils/topics';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import 'dotenv/config';
 async function bootstrap() {
- 
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
@@ -21,12 +20,19 @@ async function bootstrap() {
         consumer: {
           allowAutoTopicCreation: true,
           groupId: process.env.PRODUCT_VALIDATOR_SERVICE_GROUP_ID,
+          readUncommitted: true,
+          retry: {
+            retries: 5,
+          }
         },
         producer: {
-          allowAutoTopicCreation: true
-        }
+          allowAutoTopicCreation: true,
+        },
+        subscribe: {
+          fromBeginning: true,
+        },
       },
-      
+
     },
   );
 

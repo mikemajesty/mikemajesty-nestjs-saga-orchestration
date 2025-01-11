@@ -1,4 +1,4 @@
-import { ClientKafka } from '@nestjs/microservices';
+import { ClientKafka, KafkaOptions } from '@nestjs/microservices';
 import { ISecretsAdapter, SecretsModule } from '@/infra/secrets';
 import { Module } from '@nestjs/common';
 import { ClientProvider, ClientsModule, Transport } from '@nestjs/microservices';
@@ -12,7 +12,7 @@ import { KafkaService } from './service';
     ClientsModule.registerAsync({
       clients: [{
         imports: [SecretsModule],
-        useFactory: (secret: ISecretsAdapter): ClientProvider => {
+        useFactory: (secret: ISecretsAdapter): KafkaOptions => {
           return {
             transport: Transport.KAFKA,
             options: {
@@ -22,7 +22,14 @@ import { KafkaService } from './service';
               },
               consumer: {
                 groupId: secret.APPS.ORCHESTRATOR.KAFKA.GROUP,
+                readUncommitted: true,
+                retry: {
+                  retries: 5,
+                }
               },
+              subscribe: {
+                fromBeginning: true
+              }
             },
           };
         },

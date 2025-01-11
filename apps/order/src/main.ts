@@ -36,11 +36,20 @@ async function bootstrap() {
         clientId: secret.APPS.ORDER.KAFKA.CLIENT_ID
       },
       consumer: {
-        groupId: secret.APPS.ORDER.KAFKA.GROUP
+        groupId: secret.APPS.ORDER.KAFKA.GROUP,
+        readUncommitted: true,
+        retry: {
+          retries: 5,
+        }
+      },
+      producer: {
+        allowAutoTopicCreation: true,
+      },
+      subscribe: {
+        fromBeginning: true,
       }
     }
   })
-
 
   logger.setApplication("order");
   app.useLogger(logger);
