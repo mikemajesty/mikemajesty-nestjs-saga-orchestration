@@ -5,11 +5,11 @@ import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { ProductSchema } from '../../infra/database/schemas/product';
 import { ProductValidationSchema } from '../../infra/database/schemas/product-validation';
 import { IProductRepository } from '../../core/product/repository/product';
-import { IProductValidationRepository } from '../../core/product/repository/product-validation';
 import { ProductEntity } from '@/core/order/entity/product';
 import { Repository } from 'typeorm';
-import { ProductValidationEntity } from '../../core/product/entity/product-validation';
 import { ProductValidationRepository } from './repository';
+import { IProductValidationRepository } from '../../core/validation/repository/validation';
+import { ProductValidationEntity } from '../../core/validation/entity/validation';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ProductValidationSchema])],

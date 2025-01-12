@@ -3,8 +3,8 @@ import { FindOneOptions, FindOptionsOrder, FindOptionsRelations, FindOptionsWher
 
 import { TypeORMRepository } from '@/infra/repository/postgres/repository';
 import { ProductValidationSchema } from '../../infra/database/schemas/product-validation';
-import { IProductValidationRepository } from '../../core/product/repository/product-validation';
-import { ProductValidationEntity } from '../../core/product/entity/product-validation';
+import { IProductValidationRepository } from '../../core/validation/repository/validation';
+import { ProductValidationEntity } from '../../core/validation/entity/validation';
 
 @Injectable()
 export class ProductValidationRepository extends TypeORMRepository<Model> implements IProductValidationRepository {

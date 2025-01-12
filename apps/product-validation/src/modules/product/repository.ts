@@ -3,8 +3,6 @@ import { FindOptionsOrder, FindOptionsRelations, FindOptionsWhere, Not, Reposito
 
 import { TypeORMRepository } from '@/infra/repository/postgres/repository';
 import { ProductValidationSchema } from '../../infra/database/schemas/product-validation';
-import { IProductValidationRepository } from '../../core/product/repository/product-validation';
-import { ProductValidationEntity } from '../../core/product/entity/product-validation';
 import { IProductRepository } from '../../core/product/repository/product';
 import { ProductSchema } from '../../infra/database/schemas/product';
 import { ProductEntity } from '../../core/product/entity/product';
