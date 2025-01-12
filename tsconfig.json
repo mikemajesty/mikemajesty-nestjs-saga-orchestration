@@ -32,7 +32,14 @@
         "libs/*"
       ],
       "@/core/*": [
-        "apps/order/src/core/*"
+        "apps/order/src/core/*",
+        "apps/orchestrator/src/core/*",
+        "apps/payment/src/core/*",
+        "apps/product-validation/src/core/*",
+        "apps/inventory/src/core/*"
+      ],
+      "@/entities/*": [
+        "entities/*"
       ]
     },
   }

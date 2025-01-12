@@ -1,24 +1,9 @@
 import { z } from 'zod';
 
-import { BaseEntity } from '@/utils/entity';
+import { ProductEntity as Entity, ProductEntitySchema as Schema } from '@/entities/product';
 
-const Code = z.string()
-const UnitValue = z.number()
-
-export const ProductEntitySchema = z.object({
-  code: Code,
-  unitValue: UnitValue,
-});
+export const ProductEntitySchema = Schema
 
 type Product = z.infer<typeof ProductEntitySchema>;
 
-export class ProductEntity extends BaseEntity<ProductEntity>() {
-  code!: string;
-
-  unitValue!: number;
-
-  constructor(entity: Product) {
-    super(ProductEntitySchema);
-    Object.assign(this, this.validate(entity));
-  }
-}
+export class ProductEntity extends Entity {}

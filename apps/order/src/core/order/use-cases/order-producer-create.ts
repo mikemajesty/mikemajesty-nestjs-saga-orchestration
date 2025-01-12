@@ -43,7 +43,7 @@ export class OrderProducerCreateUsecase implements IOrderProducerCreateAdapter {
     } })
 
     const orderEntity = new OrderEntity({
-      products,
+      products: [{}],
       transactionId,
       createdAt: date.toJSDate()
     })

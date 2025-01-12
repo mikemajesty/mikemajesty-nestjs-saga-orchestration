@@ -6,7 +6,7 @@ import { IUsecase } from '@/utils/usecase';
 import { IProducerAdapter } from 'apps/product-validation/src/infra/producer/adapter';
 import { IProductRepository } from '../../product/repository/product';
 import { IProductValidationRepository } from '../repository/validation';
-import { Event } from '../../../utils/entity/event';
+import { EventEntity } from '@/entities/event';
 import { ILoggerAdapter } from '@/infra/logger';
 import { firstValueFrom } from 'rxjs';
 
