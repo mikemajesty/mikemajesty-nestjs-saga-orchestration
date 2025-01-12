@@ -18,7 +18,7 @@ const DeletedAt = z.date().or(z.string()).nullish().optional();
 export const EventEntitySchema = z.object({
   id: ID,
   transactionId: TransactionId,
-  eventHistoric: z.array(Historic).optional(),
+  eventHistoric: z.array(Historic).optional().default([]),
   orderId: OrderId,
   payload: Payload,
   status: Status,

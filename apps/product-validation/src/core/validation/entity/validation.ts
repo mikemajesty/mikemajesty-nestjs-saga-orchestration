@@ -2,6 +2,12 @@ import { z } from 'zod';
 
 import { BaseEntity } from '@/utils/entity';
 
+export enum ProductValidationStatus {
+  SUCCESS="success",
+  ROLLBACK_PENDING="rollback_pending",
+  FAIL="fails"
+}
+
 const ID = z.string().uuid();
 const TransactionId = z.string()
 const OrderId = z.string()
