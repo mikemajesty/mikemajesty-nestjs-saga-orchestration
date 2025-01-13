@@ -19,5 +19,6 @@ import { ProductRepository } from './repository';
     inject: [getRepositoryToken(ProductSchema)]
   }
   ],
+  exports: [IProductRepository]
 })
 export class ProductModule { }

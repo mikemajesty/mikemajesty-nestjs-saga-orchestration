@@ -11,6 +11,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Kafka, KafkaConfig } from 'kafkajs';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { EventEntity } from './core/event/entity/event';
+import { ExceptionHandlerInterceptor } from '@/middlewares/exception-handler';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -54,14 +55,16 @@ async function bootstrap() {
   logger.setApplication("order");
   app.useLogger(logger);
 
+  app.useGlobalInterceptors(
+    new ExceptionHandlerInterceptor(),
+  );
+
   app.setGlobalPrefix('api', {
     exclude: [
       { path: 'health', method: RequestMethod.GET },
       { path: '/', method: RequestMethod.GET }
     ]
   });
-
-  new EventEntity({"id":"8af5054c-de61-4f5a-bd55-9f0511e48377","transactionId":"1736547495481_018068bb-f881-48d1-b5aa-eabb2f83e3a3","eventHistoric":[],"orderId":"c62f94f2-5774-4b15-98b7-b647275410ca","payload":{"id":"c62f94f2-5774-4b15-98b7-b647275410ca","products":[{"product":{"code":"COMIC_BOOKS","unitValue":15.5},"quantity":3},{"product":{"code":"BOOKS","unitValue":9.9},"quantity":1}],"transactionId":"1736547495481_018068bb-f881-48d1-b5aa-eabb2f83e3a3","createdAt":"2025-01-10T22:18:15.481Z"},"createdAt":"2025-01-10T22:18:15.485Z","updatedAt":"2025-01-10T22:18:15.485Z","deletedAt":null})
 
   app.use((req: Request, res: Response, next: NextFunction) => {
     if (req.originalUrl && req.originalUrl.split('/').pop() === 'favicon.ico') {

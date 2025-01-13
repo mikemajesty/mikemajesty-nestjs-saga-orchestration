@@ -21,5 +21,6 @@ import { ProductValidationEntity } from '../../core/validation/entity/validation
     },
     inject: [getRepositoryToken(ProductValidationSchema)]
   }],
+  exports: [IProductValidationRepository]
 })
 export class ProductValidationModule {}

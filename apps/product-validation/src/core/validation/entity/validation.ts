@@ -8,7 +8,7 @@ export enum ProductValidationStatus {
   FAIL="fails"
 }
 
-const ID = z.string().uuid();
+const ID = z.string();
 const TransactionId = z.string()
 const OrderId = z.string()
 const Success = z.boolean()

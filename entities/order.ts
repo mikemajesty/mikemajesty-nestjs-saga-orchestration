@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { BaseEntity } from '@/utils/entity';
 import { OrderProductEntity, OrderProductEntitySchema } from './order-product';
 
-const ID = z.string().uuid();
+const ID = z.string();
 const Products = z.array(OrderProductEntitySchema).min(1)
 const TransactionId = z.string()
 const TotalItems = z.number().positive().nullish()

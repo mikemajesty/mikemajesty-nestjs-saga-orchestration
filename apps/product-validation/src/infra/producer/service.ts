@@ -4,7 +4,8 @@ import { TopicsProducerEnum } from "../../utils/topics";
 import { Injectable } from "@nestjs/common";
 import { IKafkaAdapter } from "../kafka/adapter";
 import { ILoggerAdapter } from "@/infra/logger";
-import { Observable } from "rxjs";
+import { firstValueFrom, Observable } from "rxjs";
+import { EventEntity } from "@/entities/event";
 
 @Injectable()
 export class ProducerService implements IProducerAdapter {
@@ -14,7 +15,7 @@ export class ProducerService implements IProducerAdapter {
     this.client = kafka.client
   }
 
-  publish(payload: string): Observable<any> {
+  async publish(payload: EventEntity): Promise<void> {
     const topic =  TopicsProducerEnum.ORCHESTRATOR
     const context = `ProductValidation/${ProducerService.name}`
     try {
@@ -24,7 +25,8 @@ export class ProducerService implements IProducerAdapter {
           payload
         }
       })
-      return this.client.send(topic, payload)
+      this.client.send(topic, payload)
+      return Promise.resolve()
     } catch (error) {
       error.parameters = {
         topic: topic,
@@ -32,6 +34,7 @@ export class ProducerService implements IProducerAdapter {
         payload
       }
       this.logger.error(error)
+      return Promise.reject(error)
     }
   }
 }

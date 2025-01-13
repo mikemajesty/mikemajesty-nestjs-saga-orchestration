@@ -40,6 +40,9 @@
       ],
       "@/entities/*": [
         "entities/*"
+      ],
+      "@/middlewares/*": [
+        "middlewares/*"
       ]
     },
   }

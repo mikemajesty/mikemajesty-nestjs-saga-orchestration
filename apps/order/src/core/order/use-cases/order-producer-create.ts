@@ -1,8 +1,6 @@
 import { ILoggerAdapter } from '@/infra/logger';
 import { z } from 'zod';
 
-import { ValidateSchema } from '@/utils/decorators';
-
 import { IOrderProducerCreateAdapter } from '../../../modules/order/adapter';
 import { OrderProductEntity, OrderProductEntitySchema } from '../entity/order-product';
 import { UUIDUtils } from '@/utils/uuid';
@@ -30,40 +28,45 @@ export class OrderProducerCreateUsecase implements IOrderProducerCreateAdapter {
     private  readonly eventRepository: IEventRepository,
   ) {}
 
-  @ValidateSchema(OrderProducerCreateInputSchema)
   async execute(input: OrderProducerCreateInput): Promise<any> {
-    const date = DateUtils.getDate()
-    const products = input.products.map(p => new OrderProductEntity(p))
-    const transactionId = `${DateUtils.date.now().toMillis()}_${UUIDUtils.create()}`
-
-    this.logger.setGlobalParameters({ traceId: transactionId })
-
-    this.logger.info({ message: `saga: ${TopicsProducerEnum.START_SAGA} started with traceId: ${transactionId}`, obj: {
-      paylod: input
-    } })
-
-    const orderEntity = new OrderEntity({
-      products: [{}],
-      transactionId,
-      createdAt: date.toJSDate()
-    })
-
-    await this.orderRepository.create(orderEntity)
-    this.logger.info({ message: `order created with id: ${orderEntity.id}` })
-
-    const eventEntity = new EventEntity({
-      orderId: orderEntity.id,
-      payload: orderEntity,
-      transactionId: orderEntity.transactionId,
-      createdAt: date.toJSDate()
-    })
-
-    await this.eventRepository.create(eventEntity)
-    this.logger.info({ message: `event created with id: ${eventEntity.id}` })
-
-    await firstValueFrom(
-       this.producer.publish(TopicsProducerEnum.START_SAGA, eventEntity)
-    );
+    try {
+      const model = OrderProducerCreateInputSchema.parse(input)
+      const date = DateUtils.getDate()
+      const products = model.products.map(p => new OrderProductEntity(p))
+      const transactionId = `${DateUtils.date.now().toMillis()}_${UUIDUtils.create()}`
+  
+      this.logger.setGlobalParameters({ traceId: transactionId })
+  
+      this.logger.info({ message: `saga: ${TopicsProducerEnum.START_SAGA} started with traceId: ${transactionId}`, obj: {
+        paylod: model
+      } })
+  
+      const orderEntity = new OrderEntity({
+        products: products,
+        transactionId,
+        createdAt: date.toJSDate()
+      })
+  
+      await this.orderRepository.create(orderEntity)
+      this.logger.info({ message: `order created with id: ${orderEntity.id}` })
+  
+      const eventEntity = new EventEntity({
+        orderId: orderEntity.id,
+        payload: orderEntity,
+        transactionId: orderEntity.transactionId,
+        createdAt: date.toJSDate()
+      })
+  
+      await this.eventRepository.create(eventEntity)
+      this.logger.info({ message: `event created with id: ${eventEntity.id}` })
+  
+      await firstValueFrom(
+         this.producer.publish(TopicsProducerEnum.START_SAGA, eventEntity)
+      );
+    } catch (error) {
+      error.context = OrderProducerCreateUsecase.name
+      this.logger.error(error)
+    }
   }
 }
 

@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'node:http';
 
 import { Injectable, InternalServerErrorException, Scope } from '@nestjs/common';
-import { blue, gray, green, isColorSupported } from 'colorette';
+import { blue, Colorette, gray, green, isColorSupported } from 'colorette';
 import { PinoRequestConverter } from 'convert-pino-request-to-curl';
 import { LogDescriptor, Logger, multistream, pino } from 'pino';
 import { HttpLogger, Options, pinoHttp } from 'pino-http';
@@ -13,6 +13,7 @@ import { UUIDUtils } from '@/utils/uuid';
 
 import { ILoggerAdapter } from './adapter';
 import { ErrorType, LogLevelEnum, MessageType } from './types';
+import { ZodError } from 'zod';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class LoggerService implements ILoggerAdapter {
@@ -21,22 +22,7 @@ export class LoggerService implements ILoggerAdapter {
   logger!: Logger;
 
   async connect(): Promise<void> {
-    const pinoLogger = pino(
-      {
-        level: LogLevelEnum.trace,
-        transport: {
-          targets: [{
-            target: "pino-pretty",
-            level: "trace",
-            options: {
-              colorize: true,
-              levelFirst: true,
-              ignore: 'pid,hostname',
-            }
-          }]
-        }
-      }
-    );
+    const pinoLogger = pino(pinoPretty(this.getPinoConfig()));
     this.logger = pinoLogger;
   }
 
@@ -66,7 +52,9 @@ export class LoggerService implements ILoggerAdapter {
     this.logger.info([obj, message].find(Boolean), message);
   }
 
-  warn({ message, context, obj = {} }: MessageType): void {
+  warn(input: MessageType): void {
+    console.log("warning");
+    const { message, context, obj = {} } = input
     Object.assign(obj, { context: context ?? obj?.["context"], createdAt: DateUtils.getISODateString() });
     this.logger.warn([obj, message].find(Boolean), message);
   }
@@ -75,6 +63,8 @@ export class LoggerService implements ILoggerAdapter {
     const errorResponse = this.getErrorResponse(error);
 
     const bidings = this.logger.bindings();
+
+    console.log("ssssssssssZodErrorsssssssssssssss", error?.message);
 
     const response =
       error instanceof BaseException
@@ -133,90 +123,20 @@ export class LoggerService implements ILoggerAdapter {
 
   private getPinoConfig(): PrettyOptions {
     return {
-      colorize: isColorSupported,
+      colorize: true,
       levelFirst: true,
       ignore: 'pid,hostname',
-      messageFormat: (log: LogDescriptor, messageKey: string) => {
+      messageFormat: (log: LogDescriptor, messageKey: string, levelLabel: string, extras: { colors: Colorette }): string => {
         const message = log[String(messageKey)];
         if (this.app) {
           return `[${blue(this.app)}] ${message}`;
         }
 
         return message;
-      },
-      customPrettifiers: {
-        time: () => {
-          return `[${DateUtils.getDateStringWithFormat()}]`;
-        }
       }
     };
   }
 
-  private getPinoHttpConfig(pinoLogger: Logger): Options {
-    return {
-      logger: pinoLogger,
-      quietReqLogger: true,
-      customSuccessMessage: (req: IncomingMessage, res: ServerResponse) => {
-        return `request ${res.statusCode >= ApiBadRequestException.STATUS ? 'error' : 'success'} with status code: ${res.statusCode}`;
-      },
-      customErrorMessage: (req: IncomingMessage, res: ServerResponse, error: Error) => {
-        return `request ${error.name} with status code: ${res.statusCode} `;
-      },
-      customAttributeKeys: {
-        req: 'request',
-        res: 'response',
-        err: 'error',
-        responseTime: 'timeTaken',
-        reqId: 'traceid'
-      },
-      serializers: {
-        err: () => false,
-        req: (request: any) => {
-          return {
-            method: request.method,
-            curl: PinoRequestConverter.getCurl(request, ['password', 'cpf'])
-          };
-        },
-        res: pino.stdSerializers.res
-      },
-      customProps: (req: IncomingMessage): object => {
-        const request = req as unknown as { context: string; protocol: string };
-        const context = request.context;
-
-        const traceid = [req?.headers?.traceid, req.id].find(Boolean);
-
-        const path = `${request.protocol}://${req.headers.host}${req.url}`;
-
-        this.logger.setBindings({
-          traceid,
-          application: this.app,
-          context,
-          createdAt: DateUtils.getISODateString()
-        });
-
-        return {
-          traceid,
-          application: this.app,
-          context,
-          path,
-          createdAt: DateUtils.getISODateString()
-        };
-      },
-      customLogLevel: (req: IncomingMessage, res: ServerResponse, error?: Error): pino.LevelWithSilent => {
-        if ([res.statusCode >= 400, error].some(Boolean)) {
-          return 'error';
-        }
-
-        if ([res.statusCode >= 300, res.statusCode <= 400].every(Boolean)) {
-          return 'silent';
-        }
-
-        return 'info';
-      }
-    };
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getErrorResponse(error: ErrorType): any {
     const isFunction = typeof error?.getResponse === 'function';
     return [

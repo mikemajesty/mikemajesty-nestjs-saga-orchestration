@@ -18,7 +18,7 @@ export class ProductValidationSchema extends BaseEntity {
   orderId!: string;
 
   @Column({ type: 'text', nullable: false })
-  trasactionId!: string;
+  transactionId!: string;
   /**
   *@description  //propriedade usada para verificar se o evento esta com falha ou não
   */

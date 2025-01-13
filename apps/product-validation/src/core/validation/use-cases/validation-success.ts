@@ -1,12 +1,11 @@
 import { z } from 'zod';
 
-import { ValidateSchema } from '@/utils/decorators';
 import { IUsecase } from '@/utils/usecase';
 
 import { IProducerAdapter } from 'apps/product-validation/src/infra/producer/adapter';
 import { IProductRepository } from '../../product/repository/product';
 import { IProductValidationRepository } from '../repository/validation';
-import { EventEntity } from '@/entities/event';
+import { EventEntity, EventEntitySchema } from '@/entities/event';
 import { ILoggerAdapter } from '@/infra/logger';
 import { firstValueFrom } from 'rxjs';
 import { ApiBadRequestException, ApiConflictException, ApiNotFoundException } from '@/utils/exception';
@@ -28,7 +27,19 @@ export class ValidationSuccessUsecase implements IUsecase {
 
   async execute(input: ValidationSuccessInput): Promise<ValidationSuccessOutput> {
     try {
-      this.checkCurrenyValidation(input)
+      EventEntitySchema.parse(input)
+      const sagaAlreadyExists = await this.productValidationRepository.findOne({ orderId: input.orderId, transactionId: input.transactionId });
+      if (sagaAlreadyExists) {
+        throw new ApiConflictException(`order: ${input.id} already exists`);
+      }
+      const productCodeList = []
+      for (const { product } of input.payload.products) {
+        productCodeList.push(product.code)
+      }
+      const products = await this.productRepository.findIn({ code: productCodeList });
+      if (productCodeList.length !== products.length) {
+        throw new ApiNotFoundException(`products not found`);
+      }
       this.checkValidation(input)
       this.handlerSuccess(input)
 
@@ -43,43 +54,11 @@ export class ValidationSuccessUsecase implements IUsecase {
       this.handlerFailCurrentNotExecuted(input, error.message as string)
     }
 
-    await firstValueFrom(this.producer.publish(JSON.stringify(input)))
-  }
-
-  private async checkCurrenyValidation(input: EventEntity) {
-    this.verifyIfProductsWasInfomed(input)
-    await this.validateIfOrderExixts(input);
-    await this.validateIfProductExists(input);
-  }
-
-  private async validateIfOrderExixts(input: EventEntity) {
-    const sagaAlreadyExists = await this.productValidationRepository.findBy({ orderId: [input.id], transactionId: [input.transactionId] });
-    if (sagaAlreadyExists) {
-      throw new ApiConflictException(`order: ${input.id} already exists`);
-    }
-  }
-
-  private async validateIfProductExists(input: EventEntity) {
-    const productIds = Array.from(new Set(input.payload.products.map(p => p.id)));
-    const products = await this.productRepository.findIn({ id: productIds });
-
-    if (productIds.length !== products.length) {
-      throw new ApiNotFoundException(`products not found`);
-    }
-  }
-
-  private verifyIfProductsWasInfomed(input: EventEntity) {
-    if ([!input?.payload, !input?.payload?.products?.length].some(Boolean)) {
-      throw new ApiBadRequestException(`product list is empty`)
-    }
-
-    if ([!input.payload.id, !input.payload.transactionId].some(Boolean)) {
-      throw new ApiBadRequestException(`order or transactionId is empty`)
-    }
+    this.producer.publish(input)
   }
 
   private async checkValidation(input: EventEntity, success = true) {
-    const entity =  new ProductValidationEntity({
+    const entity = new ProductValidationEntity({
       orderId: input.payload.id,
       transactionId: input.transactionId,
       success
@@ -105,8 +84,10 @@ export class ValidationSuccessUsecase implements IUsecase {
     input.eventHistoric.push(historic)
   }
 
-  private handlerFailCurrentNotExecuted(input: EventEntity, arg1: string) {
-    throw new Error('Function not implemented.');
+  private handlerFailCurrentNotExecuted(input: EventEntity, message: string) {
+    input.status = ProductValidationStatus.ROLLBACK_PENDING
+    input.source = this.SOURCE
+    this.addHistoric(input, `fail to validate products: ${message}`)
   }
 }
 

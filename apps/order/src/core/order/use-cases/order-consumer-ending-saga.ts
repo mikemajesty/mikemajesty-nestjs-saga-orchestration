@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-import { ValidateSchema } from '@/utils/decorators';
 import { ILoggerAdapter } from '@/infra/logger';
 import { IOrderConsumerEndingSagaAdapter } from '../../../modules/consumer/adapter';
 import { EventEntity, EventEntitySchema } from '../../event/entity/event';
@@ -16,12 +15,17 @@ export class OrderConsumerFinishSagaUsecase implements IOrderConsumerEndingSagaA
     private readonly eventRepository: IEventRepository,
   ) {}
 
-  @ValidateSchema(OrderConsumerEndingSagaInputSchema)
   async execute(input: OrderConsumerEndingSagaInput): Promise<OrderConsumerEndingSagaOutput> {
-    this.logger.setGlobalParameters({ traceId: input.transactionId })
-    this.logger.info({ message: `consumer: ${TopicsConsumerEnum.NOTIFY_ENDING}, transaction: ${input.transactionId}, orderId: ${input.id} => payload received`, obj: { payload: input } })
-    await this.eventRepository.updateOne({ orderId: input.orderId, transactionId: input.transactionId }, input)
-    this.logger.info({ message: `consumer: ${TopicsConsumerEnum.NOTIFY_ENDING}, transaction: ${input.transactionId}, orderId: ${input.id} => event created`, obj: { payload: input } })
+    try {
+      const model = OrderConsumerEndingSagaInputSchema.parse(input)
+      this.logger.setGlobalParameters({ traceId: model.transactionId })
+      this.logger.info({ message: `consumer: ${TopicsConsumerEnum.NOTIFY_ENDING}, transaction: ${model.transactionId}, orderId: ${model.orderId} => payload received`, obj: { payload: model } })
+      await this.eventRepository.updateOne({ orderId: model.orderId, transactionId: model.transactionId }, model)
+      this.logger.info({ message: `consumer: ${TopicsConsumerEnum.NOTIFY_ENDING}, transaction: ${model.transactionId}, orderId: ${model.orderId} => event created`, obj: { payload: model } })
+    } catch (error) {
+      error.context = OrderConsumerFinishSagaUsecase.name
+      this.logger.error(error)
+    }
   }
 }
 
