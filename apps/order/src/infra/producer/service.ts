@@ -15,16 +15,29 @@ export class ProducerService implements IProducerAdapter {
     this.client = kafka.client
   }
 
-  publish(topic: TopicsProducerEnum, payload: EventEntity): Observable<any> {
+  async publish(topic: TopicsProducerEnum, payload: EventEntity): Promise<void> {
     const context = `Order/ProducerService`
+
+    this.logger.info({
+      message: `message received from: ${topic} with orderId: ${payload.orderId} and transactionId: ${payload.transactionId}`, obj: {
+        context,
+        payload
+      }
+    })
     try {
-      this.logger.info({
-        message: `message received from: ${topic}`, obj: {
-          context,
-          payload
-        }
+      return new Promise((res) => {
+        this.client.emit(topic, payload).subscribe({
+          error: (error) => {
+            res(error)
+          },
+          complete: () => {
+            this.logger.info({
+              message: `message sent to topic: ${topic} with orderId: ${payload.orderId} and transactionId: ${payload.transactionId}`
+            })
+            res()
+          }
+        })
       })
-      return this.client.send(topic, JSON.stringify(payload))
     } catch (error) {
       error.parameters = {
         topic: topic,

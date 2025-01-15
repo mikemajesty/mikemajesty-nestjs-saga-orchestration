@@ -1,3 +1,4 @@
+import { EventEntity } from '@/entities/event';
 import { ClientKafka, MessagePattern } from "@nestjs/microservices";
 import { IProducerAdapter } from "./adapter";
 import { TopicsProducerEnum } from "../../utils/topics";
@@ -14,17 +15,30 @@ export class ProducerService implements IProducerAdapter {
     this.client = kafka.client
   }
 
-  publish(payload: string): Observable<any> {
+  async publish(payload: EventEntity): Promise<void> {
     const topic = TopicsProducerEnum.ORCHESTRATOR
     const context = `Inventory/${ProducerService.name}`
+
+    this.logger.info({
+      message: `message received from: ${topic} with orderId: ${payload.orderId} and transactionId: ${payload.transactionId}`, obj: {
+        context,
+        payload
+      }
+    })
     try {
-      this.logger.info({
-        message: `message received from: ${topic}`, obj: {
-          context,
-          payload
-        }
+      return new Promise((res) => {
+        this.client.emit(topic, payload).subscribe({
+          error: (error) => {
+            res(error)
+          },
+          complete: () => {
+            this.logger.info({
+              message: `message sent to topic: ${topic} with orderId: ${payload.orderId} and transactionId: ${payload.transactionId}`
+            })
+            res()
+          }
+        })
       })
-      return this.client.send(topic, payload)
     } catch (error) {
       error.parameters = {
         topic: topic,

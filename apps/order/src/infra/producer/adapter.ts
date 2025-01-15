@@ -5,5 +5,5 @@ import { EventEntity } from "@/core/event/entity/event";
 
 export abstract class IProducerAdapter {
   client: ClientKafka
-  abstract publish(topic: TopicsProducerEnum, payload: EventEntity): Observable<any>
+  abstract publish(topic: TopicsProducerEnum, payload: EventEntity): Promise<void>
 }

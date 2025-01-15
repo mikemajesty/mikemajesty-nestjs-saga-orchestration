@@ -53,7 +53,6 @@ export class LoggerService implements ILoggerAdapter {
   }
 
   warn(input: MessageType): void {
-    console.log("warning");
     const { message, context, obj = {} } = input
     Object.assign(obj, { context: context ?? obj?.["context"], createdAt: DateUtils.getISODateString() });
     this.logger.warn([obj, message].find(Boolean), message);
@@ -63,8 +62,6 @@ export class LoggerService implements ILoggerAdapter {
     const errorResponse = this.getErrorResponse(error);
 
     const bidings = this.logger.bindings();
-
-    console.log("ssssssssssZodErrorsssssssssssssss", error?.message);
 
     const response =
       error instanceof BaseException

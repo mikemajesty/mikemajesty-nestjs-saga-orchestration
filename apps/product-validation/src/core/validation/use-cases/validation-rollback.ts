@@ -38,7 +38,6 @@ export class ValidateRollbackUsecase implements IUsecase {
       }
       await this.productValidationRepository.updateOne({ orderId: event.orderId, transactionId: event.transactionId }, { success: false })
       await this.producer.publish(event)
-
     } catch (error) {
       error.parameters = {
         context: ValidateRollbackUsecase.name,

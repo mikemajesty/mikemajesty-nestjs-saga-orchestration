@@ -23,10 +23,10 @@ export class OrderProducerCreateUsecase implements IOrderProducerCreateAdapter {
 
   constructor(
     private readonly producer: IProducerAdapter,
-    private  readonly logger: ILoggerAdapter,
-    private  readonly orderRepository: IOrderRepository,
-    private  readonly eventRepository: IEventRepository,
-  ) {}
+    private readonly logger: ILoggerAdapter,
+    private readonly orderRepository: IOrderRepository,
+    private readonly eventRepository: IEventRepository,
+  ) { }
 
   async execute(input: OrderProducerCreateInput): Promise<any> {
     try {
@@ -34,35 +34,35 @@ export class OrderProducerCreateUsecase implements IOrderProducerCreateAdapter {
       const date = DateUtils.getDate()
       const products = model.products.map(p => new OrderProductEntity(p))
       const transactionId = `${DateUtils.date.now().toMillis()}_${UUIDUtils.create()}`
-  
+
       this.logger.setGlobalParameters({ traceId: transactionId })
-  
-      this.logger.info({ message: `saga: ${TopicsProducerEnum.START_SAGA} started with traceId: ${transactionId}`, obj: {
-        paylod: model
-      } })
-  
+
+      this.logger.info({
+        message: `saga: ${TopicsProducerEnum.START_SAGA} started with traceId: ${transactionId}`, obj: {
+          paylod: model
+        }
+      })
+
       const orderEntity = new OrderEntity({
         products: products,
         transactionId,
         createdAt: date.toJSDate()
       })
-  
+
       await this.orderRepository.create(orderEntity)
       this.logger.info({ message: `order created with id: ${orderEntity.id}` })
-  
+
       const eventEntity = new EventEntity({
         orderId: orderEntity.id,
         payload: orderEntity,
         transactionId: orderEntity.transactionId,
         createdAt: date.toJSDate()
       })
-  
+
       await this.eventRepository.create(eventEntity)
       this.logger.info({ message: `event created with id: ${eventEntity.id}` })
-  
-      await firstValueFrom(
-         this.producer.publish(TopicsProducerEnum.START_SAGA, eventEntity)
-      );
+
+      await this.producer.publish(TopicsProducerEnum.START_SAGA, eventEntity)
     } catch (error) {
       error.context = OrderProducerCreateUsecase.name
       this.logger.error(error)

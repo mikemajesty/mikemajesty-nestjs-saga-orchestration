@@ -16,17 +16,30 @@ export class ProducerService implements IProducerAdapter {
   }
 
   async publish(payload: EventEntity): Promise<void> {
-    const topic =  TopicsProducerEnum.ORCHESTRATOR
+    const topic = TopicsProducerEnum.ORCHESTRATOR
     const context = `ProductValidation/${ProducerService.name}`
+
+    this.logger.info({
+      message: `message received from: ${topic} with orderId: ${payload.orderId} and transactionId: ${payload.transactionId}`, obj: {
+        context,
+        payload
+      }
+    })
+
     try {
-      this.logger.info({
-        message: `message received from: ${topic}`, obj: {
-          context,
-          payload
-        }
+      return new Promise((res) => {
+        this.client.emit(topic, payload).subscribe({
+          error: (error) => {
+            res(error)
+          },
+          complete: () => {
+            this.logger.info({
+              message: `message sent to topic: ${topic} with orderId: ${payload.orderId} and transactionId: ${payload.transactionId}`
+            })
+            res()
+          }
+        })
       })
-      this.client.send(topic, payload)
-      return Promise.resolve()
     } catch (error) {
       error.parameters = {
         topic: topic,
@@ -34,7 +47,6 @@ export class ProducerService implements IProducerAdapter {
         payload
       }
       this.logger.error(error)
-      return Promise.reject(error)
     }
   }
 }
