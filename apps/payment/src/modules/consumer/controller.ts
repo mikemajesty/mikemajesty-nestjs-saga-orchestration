@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { Ctx, KafkaContext, MessagePattern, Payload } from '@nestjs/microservices';
-import { TopicsConsumerEnum } from '../utils/topics';
+import { TopicsConsumerEnum } from '../../utils/topics';
 
 @Controller()
 export class ConsumerController {
