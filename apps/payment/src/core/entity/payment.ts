@@ -4,7 +4,13 @@ import { z } from "zod";
 export enum PaymentStatus {
   PENDING = "pending",
   SUCCESS = "success",
-  REFUND = "refund",
+  REFUND = "refund"
+}
+
+export enum ValidationStatus {
+  SUCCESS="success",
+  ROLLBACK_PENDING="rollback_pending",
+  FAIL="fails"
 }
 
 export const PaymentEntitySchema = z.object({
