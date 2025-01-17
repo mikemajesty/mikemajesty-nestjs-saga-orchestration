@@ -11,7 +11,6 @@ import { EventEntity } from '@/entities/event';
 import { HistoricEntity } from '@/entities/historic';
 import { DateUtils } from '@/utils/date';
 import { ApiNotFoundException } from '@/utils/exception';
-
 export const PaymentRefundInputSchema = PaymentEntitySchema.pick({ id: true });
 
 export class PaymentRefundUsecase implements IUsecase {
@@ -37,26 +36,17 @@ export class PaymentRefundUsecase implements IUsecase {
       }
     })
 
-    try {
-      await this.realizeRefound(payload)
-    } catch (error) {
-      error.parameters = {
-        context,
-        source: this.SOURCE,
-        info: "error trying to refund payment",
-        payload
-      }
-      this.logger.error(error)
-    }
+    await this.realizeRefund(payload)
+
   }
 
-  async realizeRefound(event: EventEntity) {
+  async realizeRefund(event: EventEntity) {
     event.status = ValidationStatus.FAIL
     event.source = this.SOURCE
     try {
       await this.changePaymentStatusToRefund(event)
       this.addHistoric(event, "Rollback executed for payment.")
-    } catch(error) {
+    } catch (error) {
       this.addHistoric(event, "Rollback not executed for payment:" + error.message)
       this.logger.error(error)
     }
