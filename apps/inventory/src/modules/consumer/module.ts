@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { ConsumerController } from './controller';
-import { KafkaModule } from '../infra/kafka/module';
+import { KafkaModule } from '../../infra/kafka/module';
 
 @Module({
   imports: [KafkaModule],
