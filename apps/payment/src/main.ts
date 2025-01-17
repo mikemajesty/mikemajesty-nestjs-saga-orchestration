@@ -6,37 +6,15 @@ import { bold } from 'colorette';
 import { RequestMethod, VersioningType } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { Kafka } from 'kafkajs';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { KafkaOptions, MicroserviceOptions, Transport } from '@nestjs/microservices';
 import 'dotenv/config';
-import { TopicsConsumerEnum } from './utils/topics';
+import { TopicsConsumerEnum, TopicsProducerEnum } from './utils/topics';
+import { KafkaUtils } from '@/utils/kafka';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+  const app = await NestFactory.createMicroservice<KafkaOptions>(
     AppModule,
-    {
-      transport: Transport.KAFKA,
-      options: {
-        client: {
-          clientId: process.env.PAYMENT_SERVICE_CLIENT_ID,
-          brokers: [process.env.KAFKA_BROKEN],
-        },
-        consumer: {
-          allowAutoTopicCreation: true,
-          groupId: process.env.PAYMENT_SERVICE_GROUP_ID,
-          readUncommitted: true,
-          retry: {
-            retries: 5,
-          }
-        },
-        producer: {
-          allowAutoTopicCreation: true,
-        },
-        subscribe: {
-          fromBeginning: true,
-        },
-      },
-      
-    },
+    KafkaUtils.getKafkaConfig({ brokers: [process.env.KAFKA_BROKEN], clientId: process.env.PAYMENT_SERVICE_CLIENT_ID, groupId: process.env.PAYMENT_SERVICE_GROUP_ID }),
   );
 
   const {
@@ -50,7 +28,6 @@ async function bootstrap() {
   const secret = app.get(ISecretsAdapter);
 
   logger.setApplication("payment");
-  app.useLogger(logger);
 
   process.on('uncaughtException', (error) => {
     logger.error(error as ErrorType);
@@ -68,6 +45,7 @@ async function bootstrap() {
     topics: [
       { topic: TopicsConsumerEnum.PAYMENT_FAIL, numPartitions: 1, replicationFactor: 1 },
       { topic: TopicsConsumerEnum.PAYMENT_SUCCESS, numPartitions: 1, replicationFactor: 1 },
+      { topic: TopicsProducerEnum.ORCHESTRATOR, numPartitions: 1, replicationFactor: 1 },
     ], waitForLeaders: true
   })
   await admin.disconnect()

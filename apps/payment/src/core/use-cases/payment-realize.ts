@@ -87,6 +87,10 @@ export class PaymentRealizeUsecase implements IUsecase {
       createdAt: DateUtils.getJSDate()
     })
 
+    if (!input.eventHistoric) {
+      input.eventHistoric  = [historic]
+      return
+    }
     input.eventHistoric.push(historic)
   }
 
@@ -117,7 +121,7 @@ export class PaymentRealizeUsecase implements IUsecase {
 
   async getPayment(payment: EventEntity) {
     const model = await this.repository.findOne({ orderId: payment.orderId, transactionId: payment.transactionId })
-    if (model) {
+    if (!model) {
       throw new ApiNotFoundException("Payment not found by orderId and transactionId")
     }
     return model

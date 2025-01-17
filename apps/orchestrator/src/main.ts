@@ -34,6 +34,7 @@ async function bootstrap() {
         subscribe: {
           fromBeginning: true,
         },
+        run: { autoCommit: false }
       },
     },
   );

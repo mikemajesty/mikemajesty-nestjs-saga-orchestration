@@ -51,10 +51,15 @@ export class PaymentRefundUsecase implements IUsecase {
   }
 
   async realizeRefound(event: EventEntity) {
-    await this.changePaymentStatusToRefund(event)
     event.status = ValidationStatus.FAIL
-    event.source = this.SOURCE,
-      this.addHistoric(event, "Rollback executed for validation!")
+    event.source = this.SOURCE
+    try {
+      await this.changePaymentStatusToRefund(event)
+      this.addHistoric(event, "Rollback executed for payment.")
+    } catch(error) {
+      this.addHistoric(event, "Rollback not executed for payment:" + error.message)
+      this.logger.error(error)
+    }
     this.producer.publish(event)
   }
 
@@ -83,7 +88,7 @@ export class PaymentRefundUsecase implements IUsecase {
 
   async getPayment(payment: EventEntity) {
     const model = await this.repository.findOne({ orderId: payment.orderId, transactionId: payment.transactionId })
-    if (model) {
+    if (!model) {
       throw new ApiNotFoundException("Payment not found by orderId and transactionId")
     }
     return model

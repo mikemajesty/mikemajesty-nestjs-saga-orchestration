@@ -1,41 +1,18 @@
-import { ClientKafka } from '@nestjs/microservices';
+import { ClientKafka, KafkaOptions } from '@nestjs/microservices';
 import { ISecretsAdapter, SecretsModule } from '@/infra/secrets';
 import { Module } from '@nestjs/common';
 import { ClientProvider, ClientsModule, Transport } from '@nestjs/microservices';
 import { IKafkaAdapter } from './adapter';
 import { KafkaService } from './service';
-
-
+import { KafkaUtils } from '@/utils/kafka';
 @Module({
   imports: [
     SecretsModule,
     ClientsModule.registerAsync({
       clients: [{
         imports: [SecretsModule],
-        useFactory: (secret: ISecretsAdapter): ClientProvider => {
-          return {
-            transport: Transport.KAFKA,
-            options: {
-              client: {
-                clientId: secret.APPS.PAYMENT.KAFKA.CLIENT_ID,
-                brokers: [secret.KAFKA_BROKEN],
-              },
-              consumer: {
-                allowAutoTopicCreation: true,
-                groupId: secret.APPS.PAYMENT.KAFKA.GROUP,
-                readUncommitted: true,
-                retry: {
-                  retries: 5,
-                }
-              },
-              producer: {
-                allowAutoTopicCreation: true,
-              },
-              subscribe: {
-                fromBeginning: true,
-              },
-            },
-          };
+        useFactory: (secret: ISecretsAdapter): KafkaOptions => {
+          return KafkaUtils.getKafkaConfig({ brokers: [secret.KAFKA_BROKEN], clientId: secret.APPS.PAYMENT.KAFKA.CLIENT_ID, groupId: secret.APPS.PAYMENT.KAFKA.GROUP });
         },
         inject: [ISecretsAdapter],
         name: IKafkaAdapter.name

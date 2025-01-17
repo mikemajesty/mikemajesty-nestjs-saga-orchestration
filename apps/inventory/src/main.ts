@@ -32,7 +32,8 @@ async function bootstrap() {
         },
         producer: {
           allowAutoTopicCreation: true
-        }
+        },
+        run: { autoCommit: false }
       },
     },
   );

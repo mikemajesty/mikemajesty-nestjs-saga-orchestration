@@ -32,7 +32,8 @@ import { KafkaService } from './service';
               },
               subscribe: {
                 fromBeginning: true,
-              }
+              },
+              run: { autoCommit: false }
             },
           };
         },
