@@ -21,6 +21,7 @@ import { ProductValidationSchema } from './schemas/product-validation';
           connectTimeout: 5000,
           logging: true,
           autoLoadEntities: true,
+          migrationsRun: true,
           namingStrategy: new SnakeNamingStrategy(),
           synchronize: true,
           migrationsTableName: 'migrations',

@@ -1,6 +1,6 @@
 import { InventoryEntitySchema } from '@/core/entity/inventory';
 import { config } from 'dotenv';
-import path from 'path';
+import * as path from 'path';
 import { DataSource } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { InventorySchema } from './schemas/inventory';
@@ -8,10 +8,9 @@ import { OrderInventorySchema } from './schemas/order-inventory';
 
 config();
 
-
 const dataSource = new DataSource({
   type: 'postgres',
-  host: "inventory-db",
+  host: "localhost",
   port: 5434,
   username: "admin",
   password: "admin",

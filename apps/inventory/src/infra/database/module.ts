@@ -21,6 +21,7 @@ import { InventorySchema } from './schemas/inventory';
           connectTimeout: 5000,
           logging: true,
           autoLoadEntities: true,
+          migrationsRun: true,
           namingStrategy: new SnakeNamingStrategy(),
           synchronize: true,
           migrationsTableName: 'migrations',

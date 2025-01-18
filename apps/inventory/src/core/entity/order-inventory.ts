@@ -21,8 +21,6 @@ export const OrderInventoryEntitySchema = z.object({
 type Product = z.infer<typeof OrderInventoryEntitySchema>;
 
 export class OrderInventoryEntity extends BaseEntity<OrderInventoryEntity>() {
-  id!: string
-
   Id!: string
 
   transactionId!: string
