@@ -1,17 +1,23 @@
 import { Controller } from '@nestjs/common';
 import { Ctx, KafkaContext, MessagePattern, Payload } from '@nestjs/microservices';
 import { TopicsConsumerEnum } from '../../utils/topics';
+import { IInventoryRollbackAdapter, IInventoryUpdateAdapter } from './adapter';
 
 @Controller()
 export class ConsumerController {
-
+  constructor(
+    private readonly rollbackUsecase: IInventoryRollbackAdapter,
+    private readonly successUsecase: IInventoryUpdateAdapter
+  ) {}
   @MessagePattern(TopicsConsumerEnum.INVENTORY_FAIL)
   async failInventory(@Payload() paylod: any, @Ctx() context: KafkaContext): Promise<void> {
     const { offset } = context.getMessage();
     const partition = context.getPartition();
     const topic = context.getTopic();
     const consumer = context.getConsumer();
+    this.rollbackUsecase.execute(paylod)
     await consumer.commitOffsets([{ topic, partition, offset }])
+
     console.log("TopicsConsumerEnum.INVENTORY_FAIL received", paylod);
   }
 
@@ -22,6 +28,7 @@ export class ConsumerController {
     const topic = context.getTopic();
     const consumer = context.getConsumer();
     await consumer.commitOffsets([{ topic, partition, offset }])
+    await this.successUsecase.execute(paylod)
     console.log("TopicsConsumerEnum.INVENTORY_SUCCESS received", paylod);
   }
 }

@@ -35,6 +35,13 @@ export class ApiNotFoundException extends BaseException {
   }
 }
 
+export class ApiUnprocessableEntityException extends BaseException {
+  static STATUS = HttpStatus.UNPROCESSABLE_ENTITY;
+  constructor(message?: MessageType, parameters?: ParametersType) {
+    super(message ?? ApiNotFoundException.name, ApiNotFoundException.STATUS, parameters);
+  }
+}
+
 export class ApiConflictException extends BaseException {
   static STATUS = HttpStatus.CONFLICT;
   constructor(message?: MessageType, parameters?: ParametersType) {

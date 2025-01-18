@@ -5,7 +5,7 @@ import { BaseEntity } from '@/utils/entity';
 export enum ProductValidationStatus {
   SUCCESS="success",
   ROLLBACK_PENDING="rollback_pending",
-  FAIL="fails"
+  FAIL="fail"
 }
 
 const ID = z.string();

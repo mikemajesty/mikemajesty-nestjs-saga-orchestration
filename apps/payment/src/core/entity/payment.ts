@@ -10,7 +10,7 @@ export enum PaymentStatus {
 export enum ValidationStatus {
   SUCCESS="success",
   ROLLBACK_PENDING="rollback_pending",
-  FAIL="fails"
+  FAIL="fail"
 }
 
 export const PaymentEntitySchema = z.object({
