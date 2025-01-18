@@ -37,7 +37,9 @@ export class InventoryRollbackUsecase implements IUsecase {
       this.addHistoric(entity, "Rollback not executed for inventory:" + error.message)
       this.logger.error(error)
     }
-    this.producer.publish(entity)
+    finally {
+      this.producer.publish(entity)
+    }
   }
 
   async rollbackInventory(entity: EventEntity) {
@@ -45,8 +47,8 @@ export class InventoryRollbackUsecase implements IUsecase {
 
     for (const order of orders) {
       const inventory = order.inventory
-      await this.inventoryRepository.updateOne({ productCode: inventory.productCode }, {...inventory, available: order.oldQuantity})
-      this.logger.info({ message: `product: ${inventory.productCode} stock was update from ${inventory.available} to ${inventory.available}`})
+      await this.inventoryRepository.updateOne({ productCode: inventory.productCode }, { ...inventory, available: order.oldQuantity })
+      this.logger.info({ message: `product: ${inventory.productCode} stock was update from ${inventory.available} to ${inventory.available}` })
     }
   }
 

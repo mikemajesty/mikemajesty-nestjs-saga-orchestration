@@ -19,7 +19,7 @@ export class InsertProducts1736626515326 implements MigrationInterface {
             unitValue: 4
         });
         const product4 = new ProductEntity({
-            code: "MUCIC",
+            code: "MUSIC",
             unitValue: 4
         });
         await queryRunner.manager.insert(ProductSchema, product1 as QueryDeepPartialEntity<ProductSchema>);

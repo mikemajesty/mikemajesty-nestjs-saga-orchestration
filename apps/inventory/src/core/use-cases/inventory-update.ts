@@ -64,15 +64,17 @@ export class InventoryUpdateUsecase implements IUsecase {
         throw new ApiUnprocessableEntityException(`product: ${product.product.code} out of stock.`)
       }
 
-      inventory.available = inventory.available - product.quantity
-
-      await this.inventoryRepository.updateOne({ productCode: product.product.code }, inventory)
+      await this.inventoryRepository.updateOne({ productCode: product.product.code }, {...inventory, available: inventory.available - product.quantity })
+      this.logger.info({ message: `product: ${product.product.code} stock was update from ${inventory.available} to ${inventory.available - product.quantity}` })
     }
   }
 
   private checkCurrentyValidation = async (event: EventEntity) => {
+    console.log('olamundo', { transactionId: event.transactionId, orderId: event.orderId });
     const order = await this.orderInventoryRepository.findOne({ transactionId: event.transactionId, orderId: event.orderId })
+    console.log('bbbbbbbbbbbbbbb');
     if (order) {
+      console.log('aaaaaaaaaaaaaa');
       throw new ApiNotFoundException('there another transactionId a for this ordeId')
     }
   }

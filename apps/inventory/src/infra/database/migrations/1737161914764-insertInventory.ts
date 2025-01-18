@@ -18,7 +18,7 @@ export class InsertInventory1737161914764 implements MigrationInterface {
             available: 5
         });
         const product4 = new InventoryEntity({
-            productCode: "MUCIC",
+            productCode: "MUSIC",
             available: 9
         });
         await queryRunner.manager.insert(InventorySchema, product1 as QueryDeepPartialEntity<InventorySchema>);

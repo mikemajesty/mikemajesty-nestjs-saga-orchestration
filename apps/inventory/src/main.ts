@@ -6,7 +6,7 @@ import { AppModule } from './module';
 import { Kafka } from 'kafkajs';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import 'dotenv/config';
-import { TopicsConsumerEnum } from './utils/topics';
+import { TopicsConsumerEnum, TopicsProducerEnum } from './utils/topics';
 
 async function bootstrap() {
   
@@ -66,6 +66,7 @@ async function bootstrap() {
     topics: [
       { topic: TopicsConsumerEnum.INVENTORY_SUCCESS, numPartitions: 1, replicationFactor: 1 },
       { topic: TopicsConsumerEnum.INVENTORY_FAIL, numPartitions: 1, replicationFactor: 1 },
+      { topic: TopicsProducerEnum.ORCHESTRATOR, numPartitions: 1, replicationFactor: 1 },
     ], waitForLeaders: true
   })
   await admin.disconnect()

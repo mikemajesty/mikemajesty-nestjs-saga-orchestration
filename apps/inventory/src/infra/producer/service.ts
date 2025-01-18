@@ -27,7 +27,7 @@ export class ProducerService implements IProducerAdapter {
     })
     try {
       return new Promise((res) => {
-        this.client.emit(topic, payload).subscribe({
+        this.client.emit<string, string>(topic, JSON.stringify(payload)).subscribe({
           error: (error) => {
             res(error)
           },

@@ -14,7 +14,7 @@ const UpdatedAt = z.date().or(z.string()).nullish().optional();
 const DeletedAt = z.date().or(z.string()).nullish().optional();
 
 export const OrderInventoryEntitySchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   transactionId: z.string(),
   orderId: z.string(),
   orderQuantity: z.number(),

@@ -14,7 +14,7 @@ export enum ValidationStatus {
 }
 
 export const PaymentEntitySchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   orderId: z.string(),
   transactionId: z.string(),
   totalItems: z.number().positive(),
