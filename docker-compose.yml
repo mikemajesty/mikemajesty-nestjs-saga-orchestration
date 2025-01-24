@@ -1,0 +1,237 @@
+version: '3.1'
+
+services:
+  order-db:
+    container_name: order-db
+    image: mongo
+    restart: always
+    volumes:
+      - nestjs-saga-orchestration-mongo:/data/db
+      - .docker/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - mongo-network-order-db
+    ports:
+      - '27017:27017'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_DATABASE=order-db
+    logging:
+      driver: "none"
+
+  product-db:
+    container_name: product-db
+    image: postgres
+    environment:
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DATABASE=product-db
+    ports:
+      - '5432:5432'
+    logging:
+      driver: "none"
+    volumes:
+      - nestjs-saga-orchestration-postgres:/data/postgres
+      - .docker/postgres/create-database-product-db.sql:/docker-entrypoint-initdb.d/create-database-product-db.sql
+    restart: always
+    networks:
+      - postgres-network-product-db
+  inventory-db:
+    container_name: inventory-db
+    image: postgres
+    environment:
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DATABASE=inventory-db
+    logging:
+      driver: "none"
+    ports:
+      - '5434:5432'
+    volumes:
+      - nestjs-saga-orchestration-postgres:/data/postgres
+      - .docker/postgres/create-database-inventory-db.sql:/docker-entrypoint-initdb.d/create-database-inventory-db.sql
+    restart: always
+    networks:
+      - postgres-network-inventory-db
+  payment-db:
+    container_name: payment-db
+    image: postgres
+    logging:
+      driver: "none"
+    environment:
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DATABASE=payment-db
+    ports:
+      - '5433:5432'
+    volumes:
+      - nestjs-saga-orchestration-postgres:/data/postgres
+      - .docker/postgres/create-database-payment-db.sql:/docker-entrypoint-initdb.d/create-database-payment-db.sql
+    restart: always
+    networks:
+      - postgres-network-payment-db
+  order-service:
+    container_name: order-service
+    depends_on:
+      - order-db
+      - kafka
+      - redpanda-console
+    networks:
+      - mongo-network-order-db
+      - orchestrator-saga
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./apps/order/Dockerfile
+    volumes:
+      - ".:/app"
+    ports:
+      - 3000:3000
+      - 9229:9229
+    command: npm run start:order --inspect=0.0.0.0:9229
+  orchestrator-service:
+    container_name: orchestrator-service
+    depends_on:
+      - kafka
+      - redpanda-console
+    networks:
+      - orchestrator-saga
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./apps/orchestrator/Dockerfile
+    volumes:
+      - ".:/app"
+    ports:
+      - 8080:8080
+      - 9230:9230
+    command: npm run start:orchestrator  --inspect-brk=0.0.0.0:9230
+  inventory-service:
+    container_name: inventory-service
+    env_file:
+      - .env
+    depends_on:
+      - inventory-db
+      - kafka
+      - redpanda-console
+    networks:
+      - postgres-network-inventory-db
+      - orchestrator-saga
+    build:
+      context: .
+      dockerfile: ./apps/inventory/Dockerfile
+    volumes:
+      - ".:/app"
+    ports:
+      - 8092:8092
+      - 9231:9231
+    command: npm run start:inventory  --inspect-brk=0.0.0.0:9231
+  payment-service:
+    container_name: payment-service
+    depends_on:
+      - payment-db
+      - kafka
+      - redpanda-console
+    networks:
+      - postgres-network-payment-db
+      - orchestrator-saga
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./apps/payment/Dockerfile
+    volumes:
+      - ".:/app"
+    ports:
+      - 8091:8091
+      - 9232:9232
+    command: npm run start:payment  --inspect-brk=0.0.0.0:9232
+  product-validation-service:
+    container_name: product-validation-service
+    depends_on:
+      - product-db
+      - kafka
+      - redpanda-console
+    networks:
+      - postgres-network-product-db
+      - orchestrator-saga
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./apps/product-validation/Dockerfile
+    volumes:
+      - ".:/app"
+    ports:
+      - 8090:8090
+      - 9233:9233
+    command: npm run start:product-validation  --inspect-brk=0.0.0.0:9233
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    logging:
+      driver: "none"
+    networks:
+      - orchestrator-saga
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    networks:
+      - orchestrator-saga
+    logging:
+      driver: "none"
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  redpanda-console:
+    container_name: redpanda
+    logging:
+      driver: "none"
+    image: docker.redpanda.com/vectorized/console:latest
+    restart: on-failure
+    entrypoint: /bin/sh
+    command: -c "echo \"$$CONSOLE_CONFIG_FILE\" > /tmp/config.yml; /app/console"
+    ports:
+      - "8081:8080"
+    networks:
+      - orchestrator-saga
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["kafka:9092"]
+    depends_on:
+      - "kafka"
+
+volumes:
+  nestjs-saga-orchestration-postgres:
+  nestjs-saga-orchestration-redis:
+  nestjs-saga-orchestration-mongo:
+networks:
+  mongo-network-order-db:
+    driver: bridge
+  postgres-network-inventory-db:
+    driver: bridge
+  postgres-network-product-db:
+    driver: bridge
+  postgres-network-payment-db:
+    driver: bridge
+  orchestrator-saga:
+    driver: bridge

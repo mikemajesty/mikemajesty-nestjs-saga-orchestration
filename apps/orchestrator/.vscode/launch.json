@@ -1,0 +1,45 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug",
+      "type": "node",
+      "request": "attach",
+      "port": 9230,
+      "address": "127.0.0.1",
+      "restart": true,
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/app",
+      "outFiles": ["${workspaceRoot}/bin/server/*/.js"],
+      "skipFiles": [
+        "${workspaceRoot}/node_modules/*/.js",
+        "<node_internals>/*/.js"
+      ]
+    },
+    {
+      "name": "Docker",
+      "type": "node",
+      "request": "launch",
+      "restart": true,
+      "sourceMaps": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "autoAttachChildProcesses": true,
+      "remoteRoot": "/app/dist",
+      "args": [],
+      "outFiles": ["${workspaceRoot}/bin/server/*/.js"],
+      "skipFiles": [
+        "${workspaceRoot}/node_modules/*/.js",
+        "<node_internals>/*/.js"
+      ],
+      "console": "integratedTerminal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run-script",
+        "docker:orchestrator",
+        "--",
+        "--inspect-brk"
+      ]
+    }
+  ]
+}
