@@ -50,6 +50,11 @@ async function bootstrap() {
         DATABASE: { URI },
       },
     },
+    OBSERVABILITY: {
+      GRAFANA_URL,
+      PROMETHUES_URL,
+      ZIPKIN_URL
+    }
   } = app.get(ISecretsAdapter);
   const logger = app.get(ILoggerAdapter);
   const secret = app.get(ISecretsAdapter);
@@ -90,6 +95,10 @@ async function bootstrap() {
   await admin.disconnect();
 
   await app.listen();
+
+  logger.log(`⚪ Grafana[${bold('Graphs')}] listening at ${bold(GRAFANA_URL)}`);
+  logger.log(`⚪ Zipkin[${bold('Tracing')}] listening at ${bold(ZIPKIN_URL)}`);
+  logger.log(`⚪ Promethues[${bold('Metrics')}] listening at ${bold(PROMETHUES_URL)}\n`);
 
   logger.log(`🔵 Postgres listening at ${bold(URI)}`);
 }

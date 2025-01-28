@@ -14,6 +14,7 @@ import { ISecretsAdapter } from '@/infra/secrets';
 
 import { AppModule } from './module';
 import { TopicsConsumerEnum } from './utils/topics';
+import { bold } from 'colorette';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -91,5 +92,9 @@ async function bootstrap() {
   });
   await admin.disconnect();
   await app.listen();
+
+  logger.log(`⚪ Grafana[${bold('Graphs')}] listening at ${bold(secret.OBSERVABILITY.GRAFANA_URL)}`);
+  logger.log(`⚪ Zipkin[${bold('Tracing')}] listening at ${bold(secret.OBSERVABILITY.ZIPKIN_URL)}`);
+  logger.log(`⚪ Promethues[${bold('Metrics')}] listening at ${bold(secret.OBSERVABILITY.PROMETHUES_URL)}\n`);
 }
 bootstrap();
