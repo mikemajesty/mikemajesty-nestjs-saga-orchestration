@@ -1,4 +1,8 @@
 import 'dotenv/config';
+import { startTracing } from '@/utils/tracing';
+import { name } from '../package.json';
+
+startTracing({ name, version: "1" })
 
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';

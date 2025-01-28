@@ -26,20 +26,17 @@ import { PostgresService } from './service';
           ...conn,
           timeout: 5000,
           connectTimeout: 5000,
-          logging: false,
+          logging: true,
           autoLoadEntities: true,
-          migrationsRun: true,
-          migrate: true,
           namingStrategy: new SnakeNamingStrategy(),
           synchronize: true,
-          migrationsTableName: 'migrations',
-          migrations: [path.join(__dirname, '/migrations/*.{ts,js}')],
           entities: [ProductSchema, ProductValidationSchema],
         };
       },
       async dataSourceFactory(options) {
         const dataSource = new DataSource(options as DataSourceOptions);
-        return dataSource.initialize();
+        const run = await dataSource.initialize();
+        return run
       },
       imports: [SecretsModule],
       inject: [ISecretsAdapter],

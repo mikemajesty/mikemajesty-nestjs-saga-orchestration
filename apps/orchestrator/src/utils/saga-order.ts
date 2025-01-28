@@ -1,23 +1,18 @@
-import {
-  EventSource,
-  SagaStatus,
-  TopicsConsumerEnum,
-  TopicsProducerEnum,
-} from './topics';
+import { EventSource, SagaStatus, TopicsConsumerEnum, TopicsProducerEnum as Producer } from "./topics";
 
 export class SagaOrderUtils {
-  public static Handler: object[][] = [
+  public static Handler: unknown[][] = [
     [
       EventSource.ORCHESTRATOR,
       SagaStatus.SUCCESS,
-      TopicsProducerEnum.PRODUCT_VALIDATION_SUCCESS,
+      Producer.PRODUCT_VALIDATION_SUCCESS,
     ],
     [EventSource.ORCHESTRATOR, SagaStatus.FAIL, TopicsConsumerEnum.FINISH_FAIL],
 
     [
       EventSource.PRODUCT_VALIDATION_SERVICE,
       SagaStatus.ROLLBACK_PENDING,
-      TopicsProducerEnum.PRODUCT_VALIDATION_FAIL,
+      Producer.PRODUCT_VALIDATION_FAIL,
     ],
     [
       EventSource.PRODUCT_VALIDATION_SERVICE,
@@ -27,34 +22,34 @@ export class SagaOrderUtils {
     [
       EventSource.PRODUCT_VALIDATION_SERVICE,
       SagaStatus.SUCCESS,
-      TopicsProducerEnum.PAYMENT_SUCCESS,
+      Producer.PAYMENT_SUCCESS,
     ],
 
     [
       EventSource.PAYMENT_SERVICE,
       SagaStatus.ROLLBACK_PENDING,
-      TopicsProducerEnum.PAYMENT_FAIL,
+      Producer.PAYMENT_FAIL,
     ],
     [
       EventSource.PAYMENT_SERVICE,
       SagaStatus.FAIL,
-      TopicsProducerEnum.PRODUCT_VALIDATION_FAIL,
+      Producer.PRODUCT_VALIDATION_FAIL,
     ],
     [
       EventSource.PAYMENT_SERVICE,
       SagaStatus.SUCCESS,
-      TopicsProducerEnum.INVENTORY_SUCCESS,
+      Producer.INVENTORY_SUCCESS,
     ],
 
     [
       EventSource.INVENTORY_SERVICE,
       SagaStatus.ROLLBACK_PENDING,
-      TopicsProducerEnum.INVENTORY_FAIL,
+      Producer.INVENTORY_FAIL,
     ],
     [
       EventSource.INVENTORY_SERVICE,
       SagaStatus.FAIL,
-      TopicsProducerEnum.PAYMENT_FAIL,
+      Producer.PAYMENT_FAIL,
     ],
     [
       EventSource.INVENTORY_SERVICE,

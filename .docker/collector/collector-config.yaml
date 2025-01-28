@@ -1,0 +1,39 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: '0.0.0.0:4318'
+        cors:
+          allowed_origins:
+            - http://*
+
+exporters:
+  zipkin:
+    endpoint: 'http://zipkin-all-in-one:9411/api/v2/spans'
+  prometheus:
+    endpoint: '0.0.0.0:8889'
+  otlp:
+    endpoint: '0.0.0.0:4318'
+
+processors:
+  batch:
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+service:
+  extensions: [health_check, pprof, zpages]
+  telemetry:
+    logs:
+      level: 'debug'
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [zipkin]
+      processors: [batch]
+    metrics:
+      receivers: [otlp]
+      exporters: [prometheus]
+      processors: [batch]
