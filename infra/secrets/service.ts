@@ -28,6 +28,12 @@ export class SecretsService implements ISecretsAdapter {
 
   REDIS_URL = this.config.get('REDIS_URL');
 
+  OBSERVABILITY = {
+    ZIPKIN_URL: this.config.get<string>('ZIPKIN_URL'),
+    PROMETHUES_URL: this.config.get<string>('PROMETHUES_URL'),
+    GRAFANA_URL: this.config.get<string>('GRAFANA_URL')
+  }
+
   APPS = {
     ORDER: {
       PORT: this.config.get<number>('ORDER_APP_PORT') as number,
@@ -46,8 +52,6 @@ export class SecretsService implements ISecretsAdapter {
       },
     },
     ORCHESTRATOR: {
-      PORT: this.config.get<number>('ORCHESTRATOR_APP_PORT') as number,
-      HOST: this.config.get<string>('ORCHESTRATOR_APP_HOST') as string,
       KAFKA: {
         GROUP: this.config.get<string>(
           'ORCHESTRATOR_SERVICE_GROUP_ID',
@@ -58,8 +62,6 @@ export class SecretsService implements ISecretsAdapter {
       },
     },
     PAYMENT: {
-      PORT: this.config.get<number>('PAYMENT_APP_PORT') as number,
-      HOST: this.config.get<string>('PAYMENT_APP_HOST') as string,
       DATABASE: {
         HOST: this.config.get<string>('PAYMENT_POSTGRES_HOST') as string,
         PORT: this.config.get<number>('PAYMENT_POSTGRES_PORT') as number,
@@ -82,8 +84,6 @@ export class SecretsService implements ISecretsAdapter {
       },
     },
     PRODUCT_VALIDATOR: {
-      PORT: this.config.get<number>('PRODUCT_VALIDATOR_APP_PORT') as number,
-      HOST: this.config.get<string>('PRODUCT_VALIDATOR_APP_HOST') as string,
       DATABASE: {
         HOST: this.config.get<string>('PRODUCT_POSTGRES_HOST') as string,
         PORT: this.config.get<number>('PRODUCT_POSTGRES_PORT') as number,
@@ -108,8 +108,6 @@ export class SecretsService implements ISecretsAdapter {
       },
     },
     INVENTORY: {
-      PORT: this.config.get<number>('INVENTORY_APP_PORT') as number,
-      HOST: this.config.get<string>('INVENTORY_APP_HOST') as string,
       DATABASE: {
         HOST: this.config.get<string>('INVENTORY_POSTGRES_HOST') as string,
         PORT: this.config.get<number>('INVENTORY_POSTGRES_PORT') as number,

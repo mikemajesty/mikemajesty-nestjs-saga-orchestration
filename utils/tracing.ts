@@ -28,9 +28,18 @@ export const startTracing = (input: StartTracingInput) => {
     'service.version': input.version
   });
 
+  const metricExporter = new OTLPMetricExporter();
+
+  const metricReader = new PeriodicExportingMetricReader({
+    exporter: metricExporter,
+    exportIntervalMillis: 10000
+  });
+
+
   const sdk = new NodeSDK({
     resource,
     traceExporter: tracerExporter,
+    metricReader,
     instrumentations: [
       new KafkaJsInstrumentation(),
       new HttpInstrumentation(),

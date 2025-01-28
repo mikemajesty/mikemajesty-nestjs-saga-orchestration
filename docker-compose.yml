@@ -91,7 +91,7 @@ services:
     volumes:
       - ".:/app"
     ports:
-      - 3000:3000
+      - 4000:4000
       - 9229:9229
     command: npm run start:order --inspect=0.0.0.0:9229
   orchestrator-service:
@@ -289,7 +289,7 @@ services:
       - postgres-network-payment-db
       - orchestrator-saga
     ports:
-      - '8000:8000'
+      - '3000:3000'
     volumes:
       - grafana-storage:/var/lib/grafana
     env_file:
