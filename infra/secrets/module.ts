@@ -39,7 +39,7 @@ import { EnvEnum } from './types';
               HOST: z.string(),
               DATABASE: z.object({
                 HOST: z.string(),
-                PORT: z.number(),
+                PORT: z.number().or(z.string()).transform(v => Number(v)),
                 USER: z.string(),
                 PASSWORD: z.string(),
                 DATABASE: z.string(),
@@ -51,19 +51,15 @@ import { EnvEnum } from './types';
               }),
             }),
             ORCHESTRATOR: z.object({
-              PORT: z.number().or(z.string()).transform(v => Number(v)),
-              HOST: z.string(),
               KAFKA: z.object({
                 GROUP: z.string(),
                 CLIENT_ID: z.string(),
               }),
             }),
             PAYMENT: z.object({
-              PORT: z.number().or(z.string()).transform(v => Number(v)),
-              HOST: z.string(),
               DATABASE: z.object({
                 HOST: z.string(),
-                PORT: z.number(),
+                PORT: z.number().or(z.string()).transform(v => Number(v)),
                 USER: z.string(),
                 PASSWORD: z.string(),
                 DATABASE: z.string(),
@@ -75,11 +71,9 @@ import { EnvEnum } from './types';
               }),
             }),
             PRODUCT_VALIDATOR: z.object({
-              PORT: z.number().or(z.string()).transform(v => Number(v)),
-              HOST: z.string(),
               DATABASE: z.object({
                 HOST: z.string(),
-                PORT: z.number(),
+                PORT: z.number().or(z.string()).transform(v => Number(v)),
                 USER: z.string(),
                 PASSWORD: z.string(),
                 DATABASE: z.string(),
@@ -91,11 +85,9 @@ import { EnvEnum } from './types';
               }),
             }),
             INVENTORY: z.object({
-              PORT: z.number().or(z.string()).transform(v => Number(v)),
-              HOST: z.string(),
               DATABASE: z.object({
                 HOST: z.string(),
-                PORT: z.number(),
+                PORT: z.number().or(z.string()).transform(v => Number(v)),
                 USER: z.string(),
                 PASSWORD: z.string(),
                 DATABASE: z.string(),

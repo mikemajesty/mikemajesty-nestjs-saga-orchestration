@@ -15,7 +15,7 @@ export abstract class ISecretsAdapter {
       HOST?: string;
       DATABASE?: {
         HOST?: string;
-        PORT?: number;
+        PORT?: number | string;
         USER?: string;
         PASSWORD?: string;
         DATABASE?: string;
@@ -35,7 +35,7 @@ export abstract class ISecretsAdapter {
     PAYMENT?: {
       DATABASE?: {
         HOST?: string;
-        PORT?: number;
+        PORT?: number | string;
         USER?: string;
         PASSWORD?: string;
         DATABASE?: string;
@@ -49,7 +49,7 @@ export abstract class ISecretsAdapter {
     PRODUCT_VALIDATOR?: {
       DATABASE?: {
         HOST?: string;
-        PORT?: number;
+        PORT?: number | string;
         USER?: string;
         PASSWORD?: string;
         DATABASE?: string;
@@ -63,7 +63,7 @@ export abstract class ISecretsAdapter {
     INVENTORY?: {
       DATABASE?: {
         HOST?: string;
-        PORT?: number;
+        PORT?: number | string;
         USER?: string;
         PASSWORD?: string;
         DATABASE?: string;
