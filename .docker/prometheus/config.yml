@@ -6,12 +6,4 @@ scrape_configs:
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
-      - targets:
-          [
-            'otel-collector:8889',
-            'order-service:4000',
-            'orchestrator-service',
-            'inventory-service',
-            'payment-service',
-            'product-validation-service',
-          ]
+      - targets: ['otel-collector:8889']

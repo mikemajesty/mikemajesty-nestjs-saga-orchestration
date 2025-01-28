@@ -239,7 +239,7 @@ services:
     env_file:
       - .env
   prometheus:
-    container_name: saga-microservice-prometheus
+    container_name: prometheus
     image: prom/prometheus:v2.47.0
     env_file:
       - .env
@@ -292,8 +292,8 @@ services:
       - '3000:3000'
     volumes:
       - grafana-storage:/var/lib/grafana
-    env_file:
-      - .env
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
     depends_on:
       - prometheus
     restart: always

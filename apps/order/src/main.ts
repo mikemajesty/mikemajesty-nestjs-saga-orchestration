@@ -1,3 +1,8 @@
+import { MetricsInterceptor } from './../../../middlewares/interceptors/metrics.interceptor';
+import { TracingInterceptor } from './../../../middlewares/interceptors/tracing.interceptor';
+import { HttpLoggerInterceptor } from './../../../middlewares/interceptors/http-logger.interceptor';
+import { ExceptionHandlerInterceptor } from './../../../middlewares/interceptors/exception-handler.interceptor';
+import { ExceptionHandlerFilter } from './../../../middlewares/filters/exception-handler.filter';
 import { startTracing } from '@/utils/tracing';
 import { name } from '../package.json';
 
@@ -88,6 +93,16 @@ async function bootstrap() {
   process.on('unhandledRejection', (error) => {
     logger.error(error as ErrorType);
   });
+
+  app.useGlobalFilters(new ExceptionHandlerFilter(logger));
+
+  app.useGlobalInterceptors(
+    new ExceptionHandlerInterceptor(),
+    new HttpLoggerInterceptor(logger),
+    new TracingInterceptor(logger, name),
+    new MetricsInterceptor({ name })
+  );
+
 
   const kafka = new Kafka({
     clientId: secret.APPS.ORDER.KAFKA.CLIENT_ID,
