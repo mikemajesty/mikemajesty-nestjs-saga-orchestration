@@ -20,6 +20,8 @@ $ yarn migration:run
 
 - start-saga
 
+docs: http://localhost:4000/docs
+
 ```
 {
   "id": "64429e9a7a8b646915b37360",
@@ -40,5 +42,11 @@ $ yarn migration:run
   "eventHistory": []
 }
 ```
+
+---
+
+### Architerure
+
+![Architecture](./docs/arch.png)
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
