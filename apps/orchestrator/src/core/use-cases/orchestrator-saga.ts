@@ -13,7 +13,6 @@ export class OrchestratorSagaUsecase implements IOrchestratorSagaAdapter {
   ) {}
 
   async execute(input: OrchestratorSagaInput): Promise<OrchestratorSagaOutput> {
-    console.log('input', input);
     const entity = new EventEntity(input);
     let topic = '';
     try {
