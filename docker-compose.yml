@@ -209,7 +209,7 @@ services:
     container_name: redpanda
     logging:
       driver: "none"
-    image: docker.redpanda.com/vectorized/console:latest
+    image: docker.redpanda.com/redpandadata/console:latest
     restart: on-failure
     entrypoint: /bin/sh
     command: -c "echo \"$$CONSOLE_CONFIG_FILE\" > /tmp/config.yml; /app/console"
@@ -261,7 +261,7 @@ services:
   otel-collector:
     container_name: otel-collector
     image: otel/opentelemetry-collector-contrib:latest
-    command: ['--config=/conf/collector-config.yaml']
+    command: [ '--config=/conf/collector-config.yaml' ]
     env_file:
       - .env
     networks:

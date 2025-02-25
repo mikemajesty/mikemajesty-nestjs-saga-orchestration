@@ -2,7 +2,7 @@
   "name": "@app/inventory.api",
   "scripts": {
     "docker:inventory": "docker-compose up --no-deps --build inventory-db zookeeper kafka redpanda-console inventory-service",
-    "build": "nest build inventory-service",
+    "build": "npx nest build inventory-service",
     "typeorm": "npx ts-node -r tsconfig-paths/register \"../../node_modules/typeorm/cli.js\"",
     "migration:create": "yarn typeorm migration:create \"./src/infra/database/migrations/rename\"",
     "migration:run": "yarn typeorm migration:run -d ./src/infra/database/config --transaction none",

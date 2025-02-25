@@ -15,8 +15,11 @@
     },
     "editor.formatOnSave": true
   },
+  "search.useIgnoreFiles": false,
   "editor.formatOnSave": true,
-  "eslint.validate": ["javascript"],
+  "eslint.validate": [
+    "javascript"
+  ],
   "files.exclude": {
     "**/*dist*": true,
     "**/*coverage*": true,

@@ -6,6 +6,6 @@
     "migration:create": "yarn typeorm migration:create \"./src/infra/database/migrations/rename\"",
     "migration:run": "yarn typeorm migration:run -d ./src/infra/database/config --transaction none",
     "migration:undo": "yarn typeorm migration:revert -d ./src/infra/database/config --transaction none",
-    "build": "nest build payment-service"
+    "build": "npx nest build payment-service"
   }
 }
